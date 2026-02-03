@@ -1,0 +1,118 @@
+export const transactionData = [
+  {
+    label: "Account Funded",
+    amount: 9000,
+    date: "June 15",
+    time: "10:00 AM",
+    type: "funded",
+  },
+  {
+    label: "Paid Perfect Barber Cutz",
+    amount: 1500,
+    date: "June 04",
+    time: "7:14 PM",
+    type: "paid",
+  },
+  {
+    label: "Withdraw",
+    amount: 7500,
+    date: "Mar 10",
+    time: "11: 00 AM",
+    type: "withdraw",
+  },
+  {
+    label: "Paid Peller Grooming",
+    amount: 5000,
+    date: "May 10",
+    time: "10: 00 PM",
+    type: "funded",
+  },
+  {
+    label: "Paid Beauty's By Bella",
+    amount: 5000,
+    date: "May 10",
+    time: "10: 00 PM",
+    type: "paid",
+  },
+];
+
+
+export const fulltransactionData = [
+  {
+    label: "Account Funded",
+    amount: 9000,
+    date: "June 15",
+    time: "10:00 AM",
+    type: "funded",
+  },
+  {
+    label: "Paid Perfect Barber Cutz",
+    amount: 1500,
+    date: "June 04",
+    time: "7:14 PM",
+    type: "paid",
+  },
+  {
+    label: "Withdraw",
+    amount: 7500,
+    date: "Mar 10",
+    time: "11:00 AM",
+    type: "withdraw",
+  },
+  {
+    label: "Paid Peller Grooming",
+    amount: 5000,
+    date: "May 10",
+    time: "10:00 PM",
+    type: "funded",
+  },
+  {
+    label: "Paid Beauty's By Bella",
+    amount: 5000,
+    date: "May 10",
+    time: "10:00 PM",
+    type: "paid",
+  },
+  {
+    label: "Account Funded",
+    amount: 12000,
+    date: "July 01",
+    time: "8:30 AM",
+    type: "funded",
+  },
+  {
+    label: "Paid Groom & Glow Spa",
+    amount: 3000,
+    date: "July 02",
+    time: "3:45 PM",
+    type: "paid",
+  },
+  {
+    label: "Withdraw",
+    amount: 2000,
+    date: "July 03",
+    time: "2:15 PM",
+    type: "withdraw",
+  },
+  {
+    label: "Paid Clippers & Co.",
+    amount: 4500,
+    date: "July 05",
+    time: "6:10 PM",
+    type: "paid",
+  },
+  {
+    label: "Account Funded",
+    amount: 8000,
+    date: "July 06",
+    time: "9:00 AM",
+    type: "funded",
+  },
+  {
+    label: "Paid Royal Cuts",
+    amount: 2200,
+    date: "July 07",
+    time: "4:00 PM",
+    type: "paid",
+  },
+];
