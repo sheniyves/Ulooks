@@ -24,7 +24,7 @@ const Toast = forwardRef(({ children, status }, ref) => {
       : null;
 
   return createPortal(
-    <div className="fixed top-0 left-0 w-full flex items-center justify-center z-[1000] pointer-events-none">
+    <div className="fixed top-0 left-0 w-full flex items-center justify-center z-[2000] pointer-events-none">
       <motion.div
         className="bg-white rounded-md shadow-lg border border-slate-200 p-3 text-black/85 w-fit flex font-bold font-manr items-center gap-2 pointer-events-auto"
         initial={{ y: "-100%" }}

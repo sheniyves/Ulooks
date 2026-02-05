@@ -24,7 +24,6 @@ import { useMutation } from "@tanstack/react-query";
 import { useToast } from "../../../../hooks/useToast";
 import Toast from "../../../Components/Toast";
 import { loginUserAccount } from "../../../api/customerAuth";
-import { setToLocalStorage } from "../../../Utils/presistStorage";
 
 let images = [image1, image2, image3, image4];
 
@@ -38,28 +37,30 @@ const CustomerSignIn = () => {
     resolver: zodResolver(signInForm),
   });
 
-  const email = watch('email')
+  const email = watch("email");
 
   const [status, setStatus] = React.useState("idle");
   const navigate = useNavigate();
   const { toastMessage, toastRef, showToast } = useToast();
-
   const { mutate: login, isSuccess } = useMutation({
     mutationFn: (data) => loginUserAccount(data),
     onMutate: () => setStatus("loading"),
     onSuccess: (data) => {
       showToast(data.message || "Signed In", 2000);
       // console.log(data);
+      // console.log("Hello there!");
       // console.log(data.data);
       // console.log(data.data.token);
 
       localStorage.setItem("customerToken", data.data.token);
+      localStorage.setItem("customerData", JSON.stringify(data?.data));
+
       setStatus("success");
       setTimeout(() => {
         navigate(
           !data.data.is_personalization_done
             ? "/customerAuth/login_successful"
-            : "/customerWebApp/home"
+            : "/customerWebApp/home",
         );
       }, 2500);
     },

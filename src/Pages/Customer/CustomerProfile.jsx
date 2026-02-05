@@ -11,10 +11,15 @@ import profile from "../../assets/Images/bigProfile.svg";
 import SettingsCard from "../../Components/WebComponents/SettingsCard";
 import badge1 from "../../assets/Images/sp_badge_grade_1.svg";
 import { useLocation, useNavigate } from "react-router-dom";
+import { getFromLocalStorage } from "../../Utils/presistStorage";
 
 const CustomerProfile = () => {
   const location = useLocation();
   const navigate = useNavigate();
+  const { name, email, phone_number } = getFromLocalStorage(
+    "customerData",
+    "User",
+  );
   return (
     <div
       style={{ backgroundImage: `url(${IconBackground})` }}
@@ -48,14 +53,14 @@ const CustomerProfile = () => {
                   />
                 </div>
                 <div className="text-left md:text-center">
-                  <h2 className="font-fashion mt-4 mb-2 font-bold  text-[1.75rem] text-[#6A0DAD]">
-                    John Jake Doe
+                  <h2 className="font-fashion capitalize mt-4 mb-2 font-bold  text-[1.75rem] text-[#6A0DAD] text-center">
+                    {name}
                   </h2>
-                  <p className="text-darkPurple font-semibold text-lg text-center mt-2 max-w-[46rem]">
-                    Johnjakedoe@gmail.com
+                  <p className="text-darkPurple font-semibold text-lg text-center  max-w-[46rem]">
+                    {email}
                   </p>
-                  <p className="text-darkPurple font-semibold text-lg text-center mt-2 max-w-[46rem]">
-                    +234 81168392563
+                  <p className="text-darkPurple font-semibold text-lg text-center  max-w-[46rem]">
+                    {phone_number}
                   </p>
                 </div>
               </div>

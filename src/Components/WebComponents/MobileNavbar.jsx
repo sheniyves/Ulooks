@@ -1,8 +1,10 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { cNavs, spNavs } from "../../data/navs";
+import { getFromLocalStorage } from "../../Utils/presistStorage";
 
 const MobileNavbar = ({ navType = "customer" }) => {
+   const {name, email, phone_number} = getFromLocalStorage("customerData", "User")
   let stored = localStorage.getItem("isActive");
   try {
     stored = stored ? JSON.parse(stored) : "Home";

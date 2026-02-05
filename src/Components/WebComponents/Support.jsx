@@ -14,68 +14,97 @@ import support from "../../assets/Images/support.svg";
 import { motion } from "framer-motion";
 import { supportSchema } from "../../Schema/supportSchema";
 import { useNavigate } from "react-router-dom";
+import { getFromLocalStorage } from "../../Utils/presistStorage";
+import SelectDropDown from "./SelectDropDown";
+import { useMutationFn } from "../../../hooks/queryFn";
+import { sendSupportMessage } from "../../api/profile";
 
 const Support = ({ drawerRef }) => {
-  const [status, setStatus] = React.useState("idle");
+  const { name, email } = getFromLocalStorage("customerData", "User");
+  const navigate = useNavigate();
 
-  const buttonStatus = {
-    idle: {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    control,
+  } = useForm({
+    resolver: zodResolver(supportSchema),
+  });
+
+  const {
+    isPending,
+    mutate: sendSupport,
+    isError,
+    isSuccess,
+  } = useMutationFn({
+    fun: sendSupportMessage,
+    key: ["support_message"],
+    onSuccess: () => {
+      navigate("/customerWebApp/messageSent");
+    },
+  });
+
+  const buttonStatus = (() => {
+    if (isPending) {
+      return {
+        content: "Sending...",
+        style: {
+          backgroundColor: "#B08AD6",
+          color: "#666",
+          cursor: "not-allowed",
+        },
+      };
+    }
+
+    if (isSuccess) {
+      return {
+        content: "Submitted Successfully",
+        style: {
+          backgroundColor: "#6A0DAD",
+          color: "#fff",
+          cursor: "default",
+        },
+      };
+    }
+
+    if (isError) {
+      return {
+        content: "Something went wrong",
+        style: {
+          backgroundColor: "#D92D20",
+          color: "#fff",
+          cursor: "default",
+        },
+      };
+    }
+
+    return {
       content: "Send",
       style: {
         backgroundColor: "#6A0DAD",
         color: "#fff",
         cursor: "pointer",
       },
-    },
-    loading: {
-      content: "Sending...",
-      style: {
-        backgroundColor: "#EAEAEC",
-        color: "#666",
-        cursor: "not-allowed",
-      },
-    },
-    success: {
-      content: "Submitted Successfully",
-      style: {
-        backgroundColor: "#6A0DAD",
-        color: "#fff",
-        cursor: "default",
-      },
-    },
-    error: {
-      content: "Something went wrong",
-      style: {
-        backgroundColor: "#D32F2F",
-        color: "#fff",
-        cursor: "default",
-      },
-    },
-  };
+    };
+  })();
 
-  const { content, style } = buttonStatus[status];
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({
-    resolver: zodResolver(supportSchema),
-  });
-  const navigate = useNavigate();
+  const { content, style } = buttonStatus;
+
   const onSubmit = (data) => {
-    console.log("Form submitted", data);
-    setStatus("loading");
-    const timer = setTimeout(() => {
-      setStatus("success");
-      navigate("/customerWebApp/messageSent");
-    }, 4000);
-    return () => clearTimeout(timer);
+    const formData = new FormData();
+    formData.append("subject", data.subject);
+    formData.append("message", data.message);
+    formData.append("category", data.category);
+    formData.append("priority", data.priority);
+    sendSupport(formData);
   };
   return (
     <div>
       <DrawerHeader drawerRef={drawerRef} title={"Support"} />
+
       <div className="flex flex-col items-center justify-center h-full">
-        <div className="text-center flex items-center justify-center  flex-col ">
+        <div className="text-center flex items-center justify-center flex-col">
           <div
             style={{
               backgroundImage: `url(${backgroundIcon})`,
@@ -86,77 +115,116 @@ const Support = ({ drawerRef }) => {
             <motion.img
               initial={{ y: 20 }}
               animate={{ y: 0 }}
-              transition={{
-                duration: 0.5,
-                ease: "easeInOut",
-              }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
               src={support}
               alt="support illustration"
             />
           </div>
-          <p className="text-darkPurple font-bold text-xl text-center mt-2 max-w-[46rem] ">
+
+          <p className="text-darkPurple font-bold text-xl mt-2">
             Hey there! Having trouble with the platform?
           </p>
-          <p className="text-darkPurple font-bold text-xl text-center  max-w-[46rem]">
+          <p className="text-darkPurple font-bold text-xl">
             Let us know how we can help
           </p>
         </div>
+
         <form
           onSubmit={handleSubmit(onSubmit)}
           className="flex mt-6 w-full flex-col max-w-[95%] md:max-w-[85%]"
         >
           <Input
             icon={user}
-            name={"fullName"}
+            name="fullName"
             inputType="text"
-            label={"Full Name"}
+            value={name}
+            label="Full Name"
             {...register("fullName")}
             error={errors?.fullName?.message}
-            placeholder={"Enter your full name"}
+            placeholder="Enter your full name"
           />
+
           <Input
             icon={sms}
-            name={"email"}
+            name="email"
             inputType="email"
-            label={"Email Address"}
+            value={email}
+            label="Email Address"
             {...register("email")}
             error={errors?.email?.message}
-            placeholder={"Enter your email address"}
+            placeholder="Enter your email address"
+          />
+
+          <div className="-mt-4">
+            <SelectDropDown
+              control={control}
+              name="category"
+              error={errors.category?.message}
+              label="Category"
+              list={[
+                { value: "general_inquiry", label: "General Inquiry" },
+                { value: "technical_issue", label: "Technical Inquiry" },
+                { value: "billing_issue", label: "Billing Issue" },
+                { value: "account_issue", label: "Account Issue" },
+                { value: "feature_request", label: "Feature Request" },
+                { value: "report_violation", label: "Report Violation" },
+                { value: "other", label: "Other" },
+              ]}
+            />
+          </div>
+
+          <div className="-mt-4">
+            <SelectDropDown
+              control={control}
+              name="priority"
+              error={errors.priority?.message}
+              label="Priority"
+              list={[
+                { value: "low", label: "Low" },
+                { value: "medium", label: "Medium" },
+                { value: "high", label: "High" },
+                { value: "critical", label: "Critical" },
+              ]}
+            />
+          </div>
+
+          <Input
+            icon={sms}
+            name="subject"
+            inputType="text"
+            label="Subject"
+            {...register("subject")}
+            error={errors?.subject?.message}
+            placeholder="Enter message subject"
           />
 
           <Input
             icon={house}
             textArea
-            label={"Message"}
-            name={"message"}
+            label="Message"
+            name="message"
             inputType="text"
-            placeholder={"Write your message here"}
+            placeholder="Write your message here"
             {...register("message")}
             error={errors?.message?.message}
           />
 
           <div className="mt-6" />
+
           <ActionButton
             type="submit"
-            disabled={status === "loading"}
-            padding="1rem"
+            disabled={isPending}
             sx={{
               ...style,
               width: "100%",
               "&:hover": {
-                backgroundColor:
-                  status === "idle" ? "#5a0a99" : style.backgroundColor,
+                backgroundColor: !isPending ? "#5a0a99" : style.backgroundColor,
               },
             }}
           >
-            {status === "loading" && (
-              <Lottie
-                size={20}
-                className="w-6"
-                animationData={spinner}
-                loop={true}
-              />
-            )}{" "}
+            {isPending && (
+              <Lottie className="w-6" animationData={spinner} loop />
+            )}
             {content}
           </ActionButton>
         </form>

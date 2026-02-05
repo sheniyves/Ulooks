@@ -71,6 +71,7 @@ const CustomerResetPassword = () => {
   const onSubmit = async (data) => {
     console.log("Form submitted", data);
     const payload = { email: data.email };
+    console.log({payload})
     resendOtp(payload);
   };
 

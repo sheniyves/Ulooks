@@ -13,6 +13,7 @@ const Input = ({
   iconWithBackground = false,
   error,
   textArea = false,
+  textColor = "inherit",
   backgroundInput = "bg-transparent",
   ...props
 }) => {
@@ -47,7 +48,7 @@ const Input = ({
           />
         ) : (
           <input
-            className="border-none outline-none w-full bg-transparent"
+            className={`border-none outline-none w-full bg-transparent ${textColor}`}
             type={isPasswordType ? (reveal ? "text" : "password") : inputType}
             {...props}
           />

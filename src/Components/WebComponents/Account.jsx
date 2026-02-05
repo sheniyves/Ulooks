@@ -12,10 +12,22 @@ import spinner from "../../assets/Animations/spinner.json";
 import Lottie from "lottie-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { accountSchema } from "../../Schema/accountEditSchema";
+import { getFromLocalStorage } from "../../Utils/presistStorage";
+import { editUserProfile, userProfile } from "../../api/profile";
+import { useMutationFn, useQueryFn } from "../../../hooks/queryFn";
+import { showToast } from "../../Utils/updateStatus";
+import { useToast } from "../../../hooks/useToast";
+import Toast from "../Toast";
+import { useQueryClient } from "@tanstack/react-query";
 
-const Account = ({ drawerRef }) => {
+const Account = ({ drawerRef, data }) => {
   const [status, setStatus] = React.useState("idle");
-
+  const { name, email, phone_number, gender } = getFromLocalStorage(
+    "customerData",
+    "User",
+  );
+  const queryClient= useQueryClient()
+  const { toastMessage, toastRef, showToast } = useToast();
   const buttonStatus = {
     idle: {
       content: "Save Changes",
@@ -51,6 +63,33 @@ const Account = ({ drawerRef }) => {
     },
   };
 
+  const { mutate: editProfile, isSuccess } = useMutationFn({
+    fun: (data) => editUserProfile(data),
+    key: ["editProfile"],
+    onSuccess: (data) => {
+      setStatus("success");
+      showToast(data.message || "Profile edited!", 2000);
+      queryClient.invalidateQueries(["userProfile"])
+      setTimeout(() => {
+        drawerRef.current?.closeDrawer();
+      }, 2000);
+
+      setTimeout(() => {
+        setStatus("idle");
+      }, 2000);
+    },
+    onError: (error) => {
+      setStatus("error");
+      const errorCode = error.response?.data?.statusCode;
+
+      if (errorCode === 404) {
+        showToast("User not found");
+        return;
+      }
+      showToast("Error occurred");
+    },
+  });
+
   const { content, style } = buttonStatus[status];
   const {
     register,
@@ -58,71 +97,123 @@ const Account = ({ drawerRef }) => {
     formState: { errors },
     control,
   } = useForm({
-    resolver: zodResolver(accountSchema)
+    resolver: zodResolver(accountSchema),
+    defaultValues: {
+      state: data.state,
+      city: data.city,
+      address: data.address,
+      phoneNumber: data.phone_number,
+    },
   });
   const onSubmit = (data) => {
-    console.log("Form submitted", data);
     setStatus("loading");
-    const timer = setTimeout(() => {
-     setStatus("success");
-    }, 4000);
-    return () => clearTimeout(timer);
+
+    const { phoneNumber, state, city, address } = data;
+    const payload = {
+      phone_number: phoneNumber,
+      state,
+      city,
+      address,
+    };
+
+    editProfile(payload);
   };
+
   return (
     <div>
+      <Toast ref={toastRef} status={isSuccess ? "success" : "error"}>
+        {toastMessage}
+      </Toast>
       <DrawerHeader drawerRef={drawerRef} title={"Account"} />
       <div className="flex flex-col items-center justify-center h-full">
-        <ProfileUpload />
-            <div className="text-center">
-        <h2 className="font-fashion mt-4 mb-2 font-bold  text-[1.75rem] text-[#6A0DAD]">
-          John Jake Doe
-        </h2>
-        <p className="text-darkPurple font-semibold text-lg text-center mt-2 max-w-[46rem]">
-          Johnjakedoe@gmail.com
-        </p>
-        <p className="text-darkPurple font-semibold text-lg text-center mt-2 max-w-[46rem]">
-          +234 81168392563
-        </p>
-      </div>
-        <form onSubmit={handleSubmit(onSubmit)} className="flex mt-6 w-full flex-col max-w-[95%] md:max-w-[85%]">
-          <Input
-            icon={user}
-            name={"fullName"}
-            inputType="text"
-            label={"Full Name"}
-            {...register("fullName")}
-            error={errors?.fullName?.message}
-            placeholder={"Enter your full name"}
-          />
-          <Input
-            icon={sms}
-            name={"email"}
-            inputType="email"
-            label={"Email Address"}
-            {...register("email")}
-            error={errors?.email?.message}
-            placeholder={"Enter your email address"}
-          />
-          <div className="-mt-4 relative">
-
-          <SelectDropDown
-            control={control}
-            name="gender"
-            error={errors.gender?.message}
-            label={"Gender"}
-            list={[
-              { value: "male", label: "Male" },
-              { value: "female", label: "Female" },
-              { value: "non_binary", label: "Non-binary" },
-              { value: "prefer_not_to_say", label: "Prefer not to say" },
-            ]}
+        <ProfileUpload drawerRef={drawerRef} />
+        <div className="text-center">
+          <h2 className="font-fashion capitalize mt-4 mb-2 font-bold  text-[1.75rem] text-[#6A0DAD]">
+            {name}
+          </h2>
+          <p className="text-darkPurple font-semibold text-lg text-center  max-w-[46rem]">
+            {email}
+          </p>
+          <p className="text-darkPurple font-semibold text-lg text-center max-w-[46rem]">
+            {phone_number}
+          </p>
+        </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="flex mt-6 w-full flex-col max-w-[95%] md:max-w-[85%]"
+        >
+          <div className="bg-gray shadow-sm rounded-lg p-4 md:p-10 mb-6">
+            <Input
+              icon={user}
+              name={"fullName"}
+              inputType="text"
+              textColor={"text-gray/80"}
+              value={name || "John Doe"}
+              disabled
+              label={"Full Name"}
+              {...register("fullName")}
+              error={errors?.fullName?.message}
             />
-            </div>
+            <Input
+              icon={sms}
+              name={"email"}
+              value={email || "johndoe@gmail.com"}
+              disabled
+              textColor={"text-gray/80"}
+              inputType="email"
+              label={"Email Address"}
+              {...register("email")}
+              error={errors?.email?.message}
+            />
+            <Input
+              icon={user}
+              name={"gender"}
+              value={gender || "N/A"}
+              disabled
+              textColor={"text-gray/80"}
+              inputType="text"
+              label={"Gender"}
+              {...register("gender")}
+              error={errors?.gender?.message}
+            />
+
+            <p className="text-sm text-gray text-right">
+              These Fields can't be edited.
+            </p>
+          </div>
+
           <PhoneNumberInput
             control={control}
             error={errors?.phoneNumber?.message}
           />
-          <div className="mt-6"/>
+          <Input
+            leftIcon={false}
+            name={"state"}
+            inputType="text"
+            label={"State"}
+            {...register("state")}
+            error={errors?.state?.message}
+            placeholder={"Enter your current state"}
+          />
+          <Input
+            leftIcon={false}
+            name={"city"}
+            inputType="text"
+            label={"City"}
+            {...register("city")}
+            error={errors?.city?.message}
+            placeholder={"Enter your current city"}
+          />
+          <Input
+            leftIcon={false}
+            name={"address"}
+            inputType="text"
+            label={"Address"}
+            {...register("address")}
+            error={errors?.address?.message}
+            placeholder={"Enter your current address"}
+          />
+          <div className="mt-6" />
           <ActionButton
             type="submit"
             disabled={status === "loading"}

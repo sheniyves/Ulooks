@@ -11,8 +11,10 @@ import { useSearchCtx } from "../../Context/SearchCtx";
 import Notification from "../WebComponents/Notification";
 import Location from "../WebComponents/Location";
 import { notifications } from "../../data/notification";
+import { getFromLocalStorage } from "../../Utils/presistStorage";
 
 const Navbar = () => {
+   const {name} = getFromLocalStorage("customerData", "User")
   const { inputRef, setDebounceValue } = useSearchCtx();
   const dialogRef = React.useRef(null);
   const locationRef = React.useRef(null);
@@ -58,7 +60,7 @@ const Navbar = () => {
               <img src={notificationIcon} alt="notification icon" />
             </IconButton>
           </Tooltip>
-          <Profile to={"/customerWebApp/profile"} name={"John doe"} type={"Customer"} />
+          <Profile to={"/customerWebApp/profile"} name={name} type={"Customer"} />
         </div>
 
         <Notification dialogRef={dialogRef} notifications={notifications} />

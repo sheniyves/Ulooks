@@ -33,7 +33,8 @@ const Drawer = forwardRef(({ children }, ref) => {
 
   return (
     <div>
-      <MUIDrawer hideBackdrop elevation={2} anchor="right" open={open} onClose={() => toggleDrawer(false)}>
+      <MUIDrawer  elevation={2} anchor="right" open={open} onClose={() => toggleDrawer(true)} >
+      {/* <MUIDrawer hideBackdrop elevation={2} anchor="right" open={open} onClose={() => toggleDrawer(false)}> */}
         {DrawerList}
       </MUIDrawer>
     </div>

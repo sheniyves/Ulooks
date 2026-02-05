@@ -1,0 +1,31 @@
+import axiosInstance from "./axiosInstance";
+
+export const sendSupportMessage = async (payload) => {
+  console.log({ payload });
+  const response = await axiosInstance.post("/support/message", payload, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+};
+
+export const editUserProfile = async (payload) => {
+  const response = await axiosInstance.put("/user/edit-profile", payload, {});
+  return response.data;
+};
+
+export const userProfile = async () => {
+  const response = await axiosInstance.get("/user/profile");
+  return response.data;
+};
+
+export const userProfilePicture = async (payload) => {
+  console.log({payload})
+  const response = await axiosInstance.post("/user/profile-picture", payload, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  });
+  return response.data;
+};

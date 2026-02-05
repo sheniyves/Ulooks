@@ -21,7 +21,9 @@ import { Link } from "react-router-dom";
 import PageTransition from "../../Components/SharedComponents/PageTransition";
 import { notifications } from "../../data/notification";
 import MobileLocation from "../../Components/SharedComponents/MobileLocation";
+import { getFromLocalStorage } from "../../Utils/presistStorage";
 const CustomerHome = () => {
+     const {name} = getFromLocalStorage("customerData", "User")
   const [selectedService, setSelectedService] = React.useState(null);
   const { inputRef, setDebounceValue } = useSearchCtx();
   const {
@@ -47,7 +49,7 @@ const CustomerHome = () => {
         <Notification dialogRef={dialogRef} notifications={notifications} />
         <div className=" mt-4 lg:mt-[8.5rem]" />
         <Header action={dialogRef} icon={notification}>
-          Welcome back John
+          Welcome back {name?.split(" ")[0]}
         </Header>
         <TopServiceOfTheWeek />
         <PageTransition>

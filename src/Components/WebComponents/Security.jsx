@@ -10,12 +10,56 @@ import ActionButton from "../SharedComponents/ActionButton";
 import spinner from "../../assets/Animations/spinner.json";
 import Lottie from "lottie-react";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { accountSchema } from "../../Schema/accountEditSchema";
 import { securitySchema } from "../../Schema/securitySchema";
+import CheckCircleIcon from "./CheckCircleIcon";
+import TaskAltIcon from "@mui/icons-material/TaskAlt";
+import { useMutationFn } from "../../../hooks/queryFn";
+import { confirmResetPassword, resetPasswordOtp } from "../../api/customerAuth";
+import { motion, AnimatePresence } from "framer-motion";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "../../../hooks/useToast";
+import Toast from "../Toast";
 
-const Security = ({ drawerRef }) => {
+const Security = ({ drawerRef, isSuccess, email }) => {
   const [status, setStatus] = React.useState("idle");
+  const { toastMessage, toastRef, showToast } = useToast();
+  const {
+    mutate: resendOtp,
+    isSuccess: isOtpSent,
+    isPending,
+    isError,
+  } = useMutationFn({
+    key: ["createResetPassword"],
+    fun: (data) => resetPasswordOtp(data),
+    onSuccess: (data) => {
+      console.log({ data });
+    },
+    onError: (error) => {
+      console.log("Error", error);
+    },
+  });
+  const handleResendOtp = () => {
+    resendOtp({ email });
+  };
 
+  const { mutate: changePassword } = useMutation({
+    mutationFn: (data) => confirmResetPassword(data),
+    onMutate: () => setStatus("loading"),
+    onSuccess: (data) => {
+      showToast(data.message || "Password reset!", 2000);
+      setStatus("success");
+    },
+    onError: (error) => {
+      setStatus("error");
+      console.log("Error", error);
+      const errorCode = error.response.data.statusCode;
+      if (errorCode === 404) {
+        showToast("User not found");
+        return;
+      }
+      showToast("Error occurred");
+    },
+  });
   const buttonStatus = {
     idle: {
       content: "Save Changes",
@@ -62,17 +106,33 @@ const Security = ({ drawerRef }) => {
       currentPassword: "InitialPassword",
     },
   });
+
   const onSubmit = (data) => {
     console.log("Form submitted", data);
-    setStatus("loading");
-    const timer = setTimeout(() => {
-      setStatus("success");
-    }, 4000);
-    return () => clearTimeout(timer);
+    const { confirmPassword, otp } = data;
+    const payload = {
+      confirm_password: confirmPassword,
+      new_password: confirmPassword,
+      email:email,
+      otp,
+    };
+    changePassword(payload);
   };
   return (
     <div>
+   <Toast ref={toastRef} status={isSuccess ? "success" : "error"}>
+  {toastMessage}
+</Toast>
+
       <DrawerHeader drawerRef={drawerRef} title={"Security"} />
+      {isSuccess && (
+        <div className="bg-purple/20 flex items-center gap-2 w-fit p-3 rounded-xl text-darkerPurple border border-darkerPurple">
+          <TaskAltIcon size={6} color="inherit" />
+          <p className="text-darkerPurple text-sm">
+            Your OTP has been sent to yout mail
+          </p>
+        </div>
+      )}
       <div className="flex flex-col items-center justify-center h-full">
         <form
           onSubmit={handleSubmit(onSubmit)}
@@ -87,6 +147,16 @@ const Security = ({ drawerRef }) => {
             placeholder={"Set a secure password"}
             {...register("currentPassword")}
             error={errors?.currentPassword?.message}
+          />
+          <Input
+            rightIcon={eyeSlash}
+            iconRight
+            icon={guard}
+            inputType={"email"}
+            label={"Email"}
+            value={email || ""}
+            {...register("email")}
+            error={errors?.email?.message}
           />
           <Input
             rightIcon={eyeSlash}
@@ -108,11 +178,60 @@ const Security = ({ drawerRef }) => {
             {...register("confirmPassword")}
             error={errors?.confirmPassword?.message}
           />
+          <Input
+            iconRight={false}
+            icon={guard}
+            inputType={"text"}
+            label={"OTP"}
+            placeholder={"Enter OTP"}
+            {...register("otp")}
+            error={errors?.otp?.message}
+          />
+          {/* <p
+            className="text-center text-sm underline text-purple cursor-pointer mt-5"
+            onClick={handleResendOtp}
+          >
+            {isPending
+              ? "Sending Otp"
+              : isError
+                ? "Error occured in sending Otp"
+                : isOtpSent
+                  ? "OTP sent"
+                  : "Resend OTP"}
+          </p> */}
+          <p className="text-center mt-5">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={
+                  isPending
+                    ? "sending"
+                    : isError
+                      ? "error"
+                      : isOtpSent
+                        ? "sent"
+                        : "resend"
+                }
+                className="text-sm underline text-purple cursor-pointer"
+                onClick={handleResendOtp}
+                initial={{ opacity: 0, y: -5 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: 5 }}
+                transition={{ duration: 0.3 }}
+              >
+                {isPending
+                  ? "Sending OTP"
+                  : isError
+                    ? "Error occurred in sending OTP"
+                    : isOtpSent
+                      ? "OTP sent"
+                      : "Resend OTP"}
+              </motion.span>
+            </AnimatePresence>
+          </p>
           <div className="mt-20" />
           <ActionButton
             type="submit"
             disabled={status === "loading"}
-            padding="1rem"
             sx={{
               ...style,
               width: "100%",

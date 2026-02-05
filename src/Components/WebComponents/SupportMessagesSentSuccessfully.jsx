@@ -4,14 +4,19 @@ import ConatinerWidth from "../../Components/SharedComponents/ConatinerWidth";
 import Button from "../../Components/WebComponents/Button";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
+import ribbons from "../../assets/Images/ribbons.svg";
 import PageTransition from "../../Components/SharedComponents/PageTransition";
 const SupportMessageSentSuccessfully = () => {
-
   return (
-    <div className="bg-[#f4e2fe] min-h-screen ">
+    <div className="bg-[#f4e2fe] min-h-screen pb-20">
       <PageTransition>
         <ConatinerWidth>
-          <div className=" flex items-center justify-center flex-col mx-auto w-[92%] md:w-full pt-[10%]">
+          <img
+            className="  w-full object-cover object-center  h-[240px]"
+            src={ribbons}
+            alt="Confetti to indicate success"
+          />
+          <div className=" flex items-center justify-center flex-col mx-auto w-[92%] md:w-full pt-10">
             <motion.img
               initial={{ opacity: 0, y: 30, scale: 0.8 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -38,7 +43,7 @@ const SupportMessageSentSuccessfully = () => {
 
             <Link
               className="w-full   flex justify-center items-center"
-              to={"/"}
+              to={"/customerWebApp/profile"}
             >
               <Button
                 sx={{
@@ -56,7 +61,7 @@ const SupportMessageSentSuccessfully = () => {
                   },
                 }}
               >
-                Go Home
+                Go Back
               </Button>
             </Link>
           </div>
