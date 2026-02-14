@@ -95,7 +95,7 @@ const InfiniteVideoScroll = ({uploadRefDialog}) => {
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  if (true)
+  if (isLoading)
     return (
       <div
         className="text-center  bg-black/90 fixed w-full z-[3000] inset-0 -bottom-10 flex items-center flex-col justify-center h-full min-h-screen"
