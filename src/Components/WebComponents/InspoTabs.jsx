@@ -26,6 +26,7 @@ const InspoTabs = ({ value, onSelect }) => {
                 WebkitBackdropFilter: "blur(12px)",
                 backgroundColor: "rgba(0, 0, 0, 0.3)",
                 dropShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
+                width: "100%",
                 // minWidth: "39.5%",
                 // width: "100%",
               }}

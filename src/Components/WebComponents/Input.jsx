@@ -24,7 +24,7 @@ const Input = ({
   const revealPassword = () => setReveal((prev) => !prev);
 
   const style = `border-l ${border} ${background} flex items-center justify-center p-4`;
-  const padding = "p-3";
+  const padding = "p-4";
 
   return (
     <div className="mb-4 relative">

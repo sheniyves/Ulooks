@@ -95,10 +95,10 @@ const InfiniteVideoScroll = ({uploadRefDialog}) => {
     return () => observer.disconnect();
   }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
 
-  if (isLoading)
+  if (true)
     return (
       <div
-        className="text-center fixed inset-0 w-full h-full z-[2000] bg-black/95 flex items-center flex-col justify-center  min-h-screen"
+        className="text-center  bg-black/90 fixed w-full z-[3000] inset-0 -bottom-10 flex items-center flex-col justify-center h-full min-h-screen"
         // style={{
         //   backgroundImage: `url(${backgroundIcon})`,
         //   backgroundRepeat: "no-repeat",
