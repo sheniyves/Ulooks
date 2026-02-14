@@ -46,7 +46,7 @@ const CustomerResetPassword = () => {
     onMutate: () => setStatus("loading"),
     onSuccess: (data) => {
       console.log("Success data", data);
-      showToast(data.message || "Account Created", 2500);
+      showToast("Otp sent", 2500);
 
       setStatus("success");
 
@@ -71,7 +71,7 @@ const CustomerResetPassword = () => {
   const onSubmit = async (data) => {
     console.log("Form submitted", data);
     const payload = { email: data.email };
-    console.log({payload})
+    console.log({ payload });
     resendOtp(payload);
   };
 
@@ -103,8 +103,8 @@ const CustomerResetPassword = () => {
                 Reset Password
               </h2>
               <p className="text-darkPurple font-medium text-[1rem] mt-4">
-                Enter the email associated with your account and we’ll send an
-                email with a link to reset your password.
+                Enter the email associated with your account and we’ll send a
+                One time password to reset your password.
               </p>
 
               <form onSubmit={handleSubmit(onSubmit)} className="mt-8">

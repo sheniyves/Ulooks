@@ -21,11 +21,15 @@ export const userProfile = async () => {
 };
 
 export const userProfilePicture = async (payload) => {
-  console.log({payload})
   const response = await axiosInstance.post("/user/profile-picture", payload, {
     headers: {
       "Content-Type": "multipart/form-data"
     }
   });
+  return response.data;
+};
+
+export const userDeleteAccount = async () => {
+  const response = await axiosInstance.post("/user/delete-account");
   return response.data;
 };

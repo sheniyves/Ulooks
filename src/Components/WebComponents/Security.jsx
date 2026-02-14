@@ -126,10 +126,10 @@ const Security = ({ drawerRef, isSuccess, email }) => {
 
       <DrawerHeader drawerRef={drawerRef} title={"Security"} />
       {isSuccess && (
-        <div className="bg-purple/20 flex items-center gap-2 w-fit p-3 rounded-xl text-darkerPurple border border-darkerPurple">
+        <div className="bg-purple/20 flex items-center gap-2 w-it p-3 rounded-xl text-darkerPurple border border-darkerPurple">
           <TaskAltIcon size={6} color="inherit" />
           <p className="text-darkerPurple text-sm">
-            Your OTP has been sent to yout mail
+            Your OTP has been sent to your mail
           </p>
         </div>
       )}
@@ -138,7 +138,7 @@ const Security = ({ drawerRef, isSuccess, email }) => {
           onSubmit={handleSubmit(onSubmit)}
           className="flex mt-6 w-full flex-col max-w-[95%] md:max-w-[85%]"
         >
-          <Input
+          {/* <Input
             rightIcon={eyeSlash}
             iconRight
             icon={guard}
@@ -147,7 +147,7 @@ const Security = ({ drawerRef, isSuccess, email }) => {
             placeholder={"Set a secure password"}
             {...register("currentPassword")}
             error={errors?.currentPassword?.message}
-          />
+          /> */}
           <Input
             rightIcon={eyeSlash}
             iconRight

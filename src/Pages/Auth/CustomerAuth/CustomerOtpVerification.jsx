@@ -58,7 +58,8 @@ const CustomerOtpVerification = () => {
       showToast(data.message || "Code sent");
       setStatus("success");
     },
-    onError: () => {
+    onError: (error) => {
+      console.log({error})
       setStatus("error");
       showToast("Error occurred");
     },
@@ -73,6 +74,7 @@ const CustomerOtpVerification = () => {
     setIsDisabled(true);
     setTimer(RESEND_DELAY);
     const payload = { email, user_id: userId };
+    console.log({payload})
     resendCode(payload);
   };
 

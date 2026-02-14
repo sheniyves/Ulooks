@@ -13,17 +13,20 @@ import Lottie from "lottie-react";
 import ServiceCategory from "../../../Components/WebComponents/ServiceCategory";
 import Step1 from "./Step1";
 import FormProgress from "./FormProgress";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Step2 from "./Step2";
 import PageTransition from "../../../Components/SharedComponents/PageTransition";
 import SlideTransaction from "../../../Components/SharedComponents/slideTransaction";
 import Step3 from "./Step3";
 import Step4 from "./Step4";
+import { updateStep } from "../../../redux/formStepsSlice";
+import arrowLeft from "../../../assets/Images/arrow-left.svg";
 
 const CustomerPersonalizeAccount = () => {
   const currentStep = useSelector(
-    (state) => state.formStep.personalizeAccountC
+    (state) => state.formStep.personalizeAccountC,
   );
+  const dispatch = useDispatch();
   React.useEffect(() => {
     window.scrollTo({
       top: 0,
@@ -31,7 +34,13 @@ const CustomerPersonalizeAccount = () => {
     });
   }, [currentStep]);
 
+  const goToPrevious = (stage = 1) => {
+    dispatch(updateStep({ formKey: "personalizeAccountC", step: stage }));
+  };
 
+  React.useEffect(() => {
+    goToPrevious();
+  }, []);
 
   return (
     <div>
@@ -47,13 +56,22 @@ const CustomerPersonalizeAccount = () => {
             </div>
 
             <div className="min-h-screen overflow-y-auto px-4 md:px-6 py-10 pb-20 md:py-20 w-[100%] md:w-[90%] xl:w-[80%] no-scrollbar">
-              <FormProgress filled={"#6A0DAD"} currentStep={currentStep} maxSteps={3} />
+              <FormProgress
+                filled={"#6A0DAD"}
+                currentStep={currentStep}
+                maxSteps={3}
+              />
               <PageTransition key={currentStep}>
                 {currentStep === 1 && (
                   <>
-                    <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
-                      Personalize your account
-                    </h2>
+                    <div className="flex items-center w-fit gap-4">
+                      <Link to={"/customerAuth/login_successful"}>
+                        <img src={arrowLeft} alt="arrow left" />
+                      </Link>
+                      <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
+                        Personalize your account
+                      </h2>
+                    </div>
                     <p className="text-darkPurple font-medium text-[1rem] mt-4">
                       These questions will help Ulooks tailor recommendations
                       and services for you
@@ -64,20 +82,43 @@ const CustomerPersonalizeAccount = () => {
                   </>
                 )}
                 {currentStep === 2 && (
-                  <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
-                    Location & Accessibility
-                  </h2>
+                  <div className="flex items-center w-fit gap-4">
+                    <img
+                      src={arrowLeft}
+                      alt="arrow left"
+                      className="cursor-pointer"
+                      onClick={() => goToPrevious(1)}
+                    />
+                    <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold ">
+                      Location & Accessibility
+                    </h2>
+                  </div>
                 )}
                 {currentStep === 3 && (
-                  <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
-                    Preferences & Lifestyle
-                  </h2>
+                  <div className="flex items-center w-fit gap-4">
+                    <img
+                      className="cursor-pointer"
+                      src={arrowLeft}
+                      alt="arrow left"
+                      onClick={() => goToPrevious(2)}
+                    />
+                    <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
+                     Face ID
+                    </h2>
+                  </div>
                 )}
                 {currentStep === 4 && (
                   <>
-                    <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
-                      Face Id
-                    </h2>
+                    <div className="flex items-center w-fit gap-4">
+                      <img
+                        src={arrowLeft}
+                        alt="arrow left"
+                        onClick={() => goToPrevious(1)}
+                      />
+                      <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
+                        Face Id
+                      </h2>
+                    </div>
                     <p className="text-darkPurple font-medium text-[1rem] mt-4">
                       Position your Camera to the center of your face.
                     </p>

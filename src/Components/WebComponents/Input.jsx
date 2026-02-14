@@ -24,7 +24,7 @@ const Input = ({
   const revealPassword = () => setReveal((prev) => !prev);
 
   const style = `border-l ${border} ${background} flex items-center justify-center p-4`;
-  const padding = "p-4";
+  const padding = "p-3";
 
   return (
     <div className="mb-4 relative">
@@ -39,7 +39,7 @@ const Input = ({
           usePadding ? padding : "pl-4"
         }`}
       >
-        {leftIcon && !textArea && <img src={icon} alt="Input icon" className="mr-2" />}
+        {leftIcon && !textArea && <img src={icon} alt="Input icon" className="mr-2 max-w-5" />}
         {textArea ? (
           <textarea
             {...props}

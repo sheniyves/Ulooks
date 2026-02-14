@@ -1,19 +1,40 @@
-import React from "react";
+import React, { useCallback } from "react";
 import AlertDialog from "../SharedComponents/AlertDialog";
 import folderAddIcon from "../../assets/Images/folder-add.svg";
-import DragModal from "../WebComponents/DragModal";
 import { IconButton } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 
-const UploadInspo = ({ uploadRefDialog, uploadRef, nav="/customerWebApp/createPost" }) => {
+const UploadInspo = ({
+  uploadRefDialog,
+  uploadRef,
+  nav = "/customerWebApp/createPost",
+}) => {
   const navigate = useNavigate();
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      navigate(nav, { state: { file } });
+  const handleFiles = (files) => {
+    const fileArray = Array.from(files);
+
+    if (fileArray.length > 0) {
+      navigate(nav, { state: { files: fileArray } });
+      uploadRefDialog.current?.closeDialog();
     }
   };
+
+  const handleFileChange = (e) => {
+    handleFiles(e.target.files);
+  };
+
+  const handleDrop = useCallback((e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleFiles(e.dataTransfer.files);
+  }, []);
+
+  const handleDragOver = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+  };
+
   return (
     <div>
       <AlertDialog
@@ -21,19 +42,27 @@ const UploadInspo = ({ uploadRefDialog, uploadRef, nav="/customerWebApp/createPo
         iconPresence={false}
         background={"#f4e2fe"}
       >
-        <div className="-mt-12 w-[22rem] h-[11.28rem] flex items-center justify-center flex-col ">
-          <IconButton onClick={() => uploadRef.current?.click()}>
+        <div
+          className=" h-[11.28rem] flex items-center justify-center flex-col border-2 border-dashed border-[#BE6BFB] rounded-lg cursor-pointer"
+          onClick={() => uploadRef.current?.click()}
+          onDrop={handleDrop}
+          onDragOver={handleDragOver}
+        >
+          <IconButton>
             <img src={folderAddIcon} alt="add folder icon" />
           </IconButton>
+
           <input
             type="file"
             className="hidden"
             ref={uploadRef}
-            accept="image/*"
+            accept="image/*,video/*"
+            multiple
             onChange={handleFileChange}
           />
-          <span className="text-xs font-normal text-[#BE6BFB]">
-            Upload file
+
+          <span className="text-xs font-normal text-[#BE6BFB] p-4 text-center">
+            Drag & Drop or Click to Upload (Images & Videos)
           </span>
         </div>
       </AlertDialog>

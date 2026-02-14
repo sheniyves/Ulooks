@@ -168,7 +168,7 @@ const Support = ({ drawerRef }) => {
                 { value: "account_issue", label: "Account Issue" },
                 { value: "feature_request", label: "Feature Request" },
                 { value: "report_violation", label: "Report Violation" },
-                { value: "other", label: "Other" },
+                { value: "other", label: "Others" },
               ]}
             />
           </div>

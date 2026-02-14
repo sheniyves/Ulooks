@@ -31,31 +31,39 @@ const Step3 = () => {
   });
   const dispatch = useDispatch();
   const [location, setLocation] = useState({});
+  const [isLocationReady, setIsLocationReady] = useState(false);
   const [status, setStatus] = useState("idle");
 
   const step1Data = useSelector(
-    (state) => state.personalizationFormData.customerPersonalizationForm.step1
+    (state) => state.personalizationFormData.customerPersonalizationForm.step1,
   );
   const step2Data = useSelector(
-    (state) => state.personalizationFormData.customerPersonalizationForm.step2
+    (state) => state.personalizationFormData.customerPersonalizationForm.step2,
   );
   const navigate = useNavigate();
   React.useEffect(() => {
     getCurrentLocation()
       .then((coords) => {
-        console.log("Your location:", coords.latitude, coords.longitude);
+        if (!coords?.latitude || !coords?.longitude) {
+          throw new Error("Invalid location coordinates");
+        }
 
         setLocation({
           latitude: coords.latitude,
           longitude: coords.longitude,
         });
+
+        setIsLocationReady(true);
       })
       .catch((err) => {
         console.error("Error getting location:", err.message);
+
+        setIsLocationReady(false);
       });
   }, []);
 
   const { toastMessage, toastRef, showToast } = useToast();
+  console.log({ isLocationReady });
 
   const { mutate: personalize, isSuccess } = useMutation({
     mutationFn: (data) => personalizeUser(data),
@@ -81,6 +89,12 @@ const Step3 = () => {
   });
 
   const onSubmit = async (data) => {
+    console.log("Personalization data", data);
+    if (!location) {
+      showToast("Location not ready yet. Please wait...");
+      return;
+    }
+
     dispatch(updateStep({ formKey: "personalizeAccountC", step: 3 }));
     dispatch(updateForm({ stepKey: "step2", data }));
 
@@ -93,26 +107,21 @@ const Step3 = () => {
       living_city: step2Data.city,
       house_address: step2Data.houseAddress,
       location_description: step2Data.locationDescription,
-      wants_location_recommendation:
-        step2Data.recommendations === "yes" ,
-      service_preference: step2Data.serviceType,
-      wants_discounts: step2Data.discountNdOffers === "yes",
-      wants_reminders: data.reminders === "yes",
-      wants_to_save_funds: data.saveFunds === "yes",
       latitude: location.latitude,
       longitude: location.longitude,
+      genderOfStylist: step2Data.genderOfStylist,
     };
 
     const formData = new FormData();
     Object.entries(payload).forEach(([key, value]) => {
-      formData.append(key, value);
+      if (value !== undefined && value !== null) {
+        formData.append(key, value);
+      }
     });
+
     formData.append("face_image", faceImage);
 
-    console.log(payload);
-
     personalize(formData);
-    console.log("Form data", data);
   };
 
   const config = getButtonStatus({
@@ -129,76 +138,41 @@ const Step3 = () => {
       <Toast ref={toastRef} status={isSuccess ? "success" : "error"}>
         {toastMessage}
       </Toast>
-      <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
-        <SelectDropDown
-          control={control}
-          name="genderOfStylist"
-          error={errors.genderOfStylist?.message}
-          label={"Do you prefer a specific stylist gender?"}
-          placeholder={"Select an option"}
-          list={[
-            { value: "male", label: "Male" },
-            { value: "female", label: "Female" },
-            { value: "others", label: "Others" },
-            { value: "not_gender_specific", label: "Not gender specific" },
-          ]}
-          //   defaultValue="male"
-        />
-        <SelectDropDown
-          control={control}
-          name="reminders"
-          error={errors.reminders?.message}
-          label={
-            "Would you like reminders for your next beauty/grooming appointment?"
-          }
-          placeholder={"Select an option"}
-          list={[
-            { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
-          ]}
-        />
-        <SelectDropDown
-          control={control}
-          name="saveFunds"
-          error={errors.saveFunds?.message}
-          label={
-            "Would you like to save funds for beauty/grooming services in your Ulooks?"
-          }
-          placeholder={"Select an option"}
-          list={[
-            { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
-          ]}
-        />
+      {/* <form onSubmit={handleSubmit(onSubmit)} className="mt-8">
+      
 
-        <div className="mt-10" />
-        {/* <Button sx={{ width: "100%" }} type="submit">
-          Continue
-        </Button> */}
-        <ActionButton
-          type="submit"
-          disabled={status === "loading"}
-          sx={{
-            marginTop: "1rem",
-            ...style,
-            width: "100%",
-            "&:hover": {
-              backgroundColor:
-                status === "idle" ? "#5a0a99" : style.backgroundColor,
-            },
-          }}
-        >
-          {status === "loading" && (
-            <Lottie
-              size={20}
-              className="w-6"
-              animationData={spinner}
-              loop={true}
-            />
-          )}{" "}
-          {content}
-        </ActionButton>
-      </form>
+      
+      </form> */}
+      {!isLocationReady && (
+        <div className="bg-red/20 text-red p-6 shadow-sm rounded-xl mt-6">
+          Location is not available, please wait.
+        </div>
+      )}
+      <div className="mt-10" />
+      <ActionButton
+        type="submit"
+        onClick={onSubmit}
+        disabled={status === "loading" || !isLocationReady}
+        sx={{
+          marginTop: "1rem",
+          ...style,
+          width: "100%",
+          "&:hover": {
+            backgroundColor:
+              status === "idle" ? "#5a0a99" : style.backgroundColor,
+          },
+        }}
+      >
+        {status === "loading" && (
+          <Lottie
+            size={20}
+            className="w-6"
+            animationData={spinner}
+            loop={true}
+          />
+        )}{" "}
+        {content}
+      </ActionButton>
     </div>
   );
 };

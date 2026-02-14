@@ -43,8 +43,8 @@ const OTPInput = ({ length = 6, onChange, onComplete }) => {
           onChange={(e) => handleChange(e, index)}
           onKeyDown={(e) => handleKeyDown(e, index)}
           maxLength={1}
-          className={`w-10 h-12 text-center rounded-md bg-[#D0D5DD] shadow-sm text-lg focus:outline-none 
-            ${d ? "border-2 border-[#2F034E]" : "border-none"}`}
+          className={`w-10 h-12 text-center rounded-md bg-transparent shadow-sm text-lg focus:outline-none 
+            ${d ? "border-2 border-[#2F034E]" : "border border-[#2F034E]/40"}`}
         />
       ))}
     </div>

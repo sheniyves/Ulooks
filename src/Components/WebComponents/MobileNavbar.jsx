@@ -1,10 +1,15 @@
 import React, { useRef, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { cNavs, spNavs } from "../../data/navs";
-import { getFromLocalStorage } from "../../Utils/presistStorage";
+import { useQueryFn } from "../../../hooks/queryFn";
+import { userProfile } from "../../api/profile";
+import { Avatar } from "@mui/material";
 
 const MobileNavbar = ({ navType = "customer" }) => {
-   const {name, email, phone_number} = getFromLocalStorage("customerData", "User")
+  const { data } = useQueryFn({
+    key: ["userProfile"],
+    fun: userProfile,
+  });
   let stored = localStorage.getItem("isActive");
   try {
     stored = stored ? JSON.parse(stored) : "Home";
@@ -63,21 +68,29 @@ const MobileNavbar = ({ navType = "customer" }) => {
               ref={(el) => (itemRefs.current[index] = el)}
               className="flex flex-col items-center gap-1 cursor-pointer text-sm text-gray-700 px-2"
             >
-              <img
-                src={nav.icon}
-                alt={`${nav.label} icon`}
-                style={
-                  isActive === nav.label
-                    ? {
-                        filter: IconColor,
-                      }
-                    : {}
-                }
-              />
+              {nav.label === "Profile" ? (
+                <Avatar sizes="small" sx={{width: "1.5rem", height: "1.5rem"}} src={data?.profile_picture_url} />
+              ) : (
+                <img
+                  src={nav.icon}
+                  alt={`${nav.label} icon`}
+                  style={
+                    isActive === nav.label
+                      ? {
+                          filter: IconColor,
+                        }
+                      : {}
+                  }
+                />
+              )}
 
               <p
                 className={`text-xs font-medium ${
-                  isActive === nav.label ? navType === "customer" ? "text-darkPurple" : "text-[#F79009]" : "text-[#98A2B3]"
+                  isActive === nav.label
+                    ? navType === "customer"
+                      ? "text-darkPurple"
+                      : "text-[#F79009]"
+                    : "text-[#98A2B3]"
                 }`}
               >
                 {nav.label}

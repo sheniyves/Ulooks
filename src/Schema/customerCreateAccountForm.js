@@ -2,8 +2,8 @@ import { z } from "zod";
 
 export const createAccountForm = z.object({
   fullName: z.string().min(2, "Full name is required"),
+  referralCode: z.string().optional(),
   email: z.string().email("Invalid email address"),
-
   agreedToTerms: z.literal(true, {
     errorMap: () => ({
       message: "You must agree to the Terms and Conditions",

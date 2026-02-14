@@ -10,17 +10,16 @@ import { serviceOptions } from "../Utils/serviceOptions";
 
 // CUSTOMER EXPERIENCE
 const validCategories = [
-  "harstyling",
+  "hair",
   "makeup",
-  "barbing",
-  "spa_session",
-  "beauty_and_grooming_services",
-  "special_service",
-  "hair_coloring_and_treatment",
-  "laundry",
+  "mens_grooming",
+  "spa_and_wellness",
+  "cosmetic_procedures",
+  "grooming",
+  "nails",
 ];
 
-const validServiceUsages = ["daily", "weekly", "monthly", "not_very_often"];
+const validServiceUsages = ["weekly", "bi_weekly", "monthly", "ocassionally", "rarely"];
 
 export const step1Schema = z.object({
   dateOfBirth: z.string().refine((val) => !isNaN(Date.parse(val)), {
@@ -35,7 +34,7 @@ export const step1Schema = z.object({
     }),
 
   serviceUsage: z
-    .enum([...validServiceUsages, ""])
+    .enum([...validServiceUsages])
     .nullable()
     .refine((val) => val !== null, {
       message: "Select an option",

@@ -13,6 +13,7 @@ const Navbar = () => {
   const { inputRef, setDebounceValue } = useSearchCtx();
   const dialogRef = React.useRef(null);
   const locationRef = React.useRef(null);
+  
 
   return (
     <ConatinerWidth>

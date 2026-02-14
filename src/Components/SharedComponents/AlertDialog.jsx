@@ -44,7 +44,7 @@ const AlertDialog = forwardRef(
       <Dialog
         disableEnforceFocus
         open={open}
-        keepMounted
+        // keepMounted
         onClose={handleClose}
         fullScreen={useFullWidth}
         disablePortal
@@ -85,7 +85,7 @@ const AlertDialog = forwardRef(
           </ButtonBase>
         </DialogTitle>
 
-        {/* ✅ Scrollable content */}
+        {/* Scrollable content */}
         <DialogContent
           dividers
           sx={{

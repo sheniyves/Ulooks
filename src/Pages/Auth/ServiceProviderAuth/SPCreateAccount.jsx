@@ -16,7 +16,9 @@ import { useSelector } from "react-redux";
 import SPCreateAccountStep1 from "./SPCreateAccountStep1";
 import SPCreateAccountStep2 from "./SPCreateAccountStep2";
 import SPCreateAccountStep3 from "./SPCreateAccountStep3";
+import arrowLeft from "../../../assets/Images/arrow-left.svg";
 import PageTransition from "../../../Components/SharedComponents/PageTransition";
+import { Link } from "react-router-dom";
 
 const SPCreateAccount = () => {
   const currentStep = useSelector((state) => state.formStep.createAccountSp);
@@ -38,9 +40,22 @@ const SPCreateAccount = () => {
               <PageTransition key={currentStep}>
                 {currentStep === 1 && (
                   <div>
-                    <h2 className="text-orange_gold font-fashion text-[1.75rem] font-bold">
-                      Create Service Provider account
-                    </h2>
+                    <div className="flex items-center gap-4">
+                      <Link to="/">
+                        <img
+                          className="cursor-pointer"
+                          style={{
+                            filter:
+                              "brightness(0) saturate(100%) invert(63%) sepia(22%) saturate(4081%) hue-rotate(358deg) brightness(99%) contrast(95%)",
+                          }}
+                          src={arrowLeft}
+                          alt="Arrow directing to left"
+                        />{" "}
+                      </Link>
+                      <h2 className="text-orange_gold font-fashion text-[1.75rem] font-bold">
+                        Create Service Provider account
+                      </h2>
+                    </div>
                     <p className="text-yellow_gold font-medium text-[1rem] mt-4">
                       Provide your details to complete your account setup and
                       start offering services
@@ -51,14 +66,40 @@ const SPCreateAccount = () => {
                   </div>
                 )}
                 {currentStep === 2 && (
-                  <h2 className="text-orange_gold font-fashion text-[1.75rem] font-bold mt-8">
-                    Business details
-                  </h2>
+                  <div className="flex items-center gap-4">
+                    <Link to="/">
+                      <img
+                        className="cursor-pointer"
+                        style={{
+                          filter:
+                            "brightness(0) saturate(100%) invert(63%) sepia(22%) saturate(4081%) hue-rotate(358deg) brightness(99%) contrast(95%)",
+                        }}
+                        src={arrowLeft}
+                        alt="Arrow directing to left"
+                      />{" "}
+                    </Link>
+                    <h2 className="text-orange_gold font-fashion text-[1.75rem] font-bold mt-8">
+                      Business details
+                    </h2>
+                  </div>
                 )}
                 {currentStep === 3 && (
+                       <div className="flex items-center gap-4">
+                      <Link to="/">
+                        <img
+                          className="cursor-pointer"
+                          style={{
+                            filter:
+                              "brightness(0) saturate(100%) invert(63%) sepia(22%) saturate(4081%) hue-rotate(358deg) brightness(99%) contrast(95%)",
+                          }}
+                          src={arrowLeft}
+                          alt="Arrow directing to left"
+                        />{" "}
+                      </Link>
                   <h2 className="text-orange_gold font-fashion text-[1.75rem] font-bold mt-8">
                     Bank and Payment Information
-                  </h2>
+                    </h2>
+                    </div>
                 )}
 
                 <div>

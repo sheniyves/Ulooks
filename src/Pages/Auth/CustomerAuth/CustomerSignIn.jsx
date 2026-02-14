@@ -19,6 +19,7 @@ import image1 from "../../../assets/Images/onboarding_image1.svg";
 import image2 from "../../../assets/Images/onboarding_image2.svg";
 import image3 from "../../../assets/Images/onboarding_image3.svg";
 import image4 from "../../../assets/Images/onboarding_image4.svg";
+import arrowLeft from "../../../assets/Images/arrow-left.svg";
 import { buttonStatus as getButtonStatus } from "../../../Utils/updateStatus";
 import { useMutation } from "@tanstack/react-query";
 import { useToast } from "../../../../hooks/useToast";
@@ -122,9 +123,18 @@ const CustomerSignIn = () => {
             </div>
 
             <div className="-mt-6 md:mt-0 h-full md:h-screen overflow-y-auto  overflow-hidden  lg:shadow-none rounded-[2rem] lg:rounded-none pt-0 md:pt-10 lg:pt-[20%] px-4 md:px-6  w-[100%] md:w-[90%] xl:w-[80%] no-scrollbar">
-              <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
-                Welcome back, Customer👋
-              </h2>
+              <div className="flex items-center gap-4">
+                <Link to="/" >
+                  <img
+                    className="cursor-pointer"
+                    src={arrowLeft}
+                    alt="Arrow directing to left"
+                  />{" "}
+                </Link>
+                <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
+                  Welcome back, Customer👋
+                </h2>
+              </div>
               <p className="text-darkPurple font-medium text-[1rem] mt-4">
                 Please enter your login information below to access your
                 Customer account

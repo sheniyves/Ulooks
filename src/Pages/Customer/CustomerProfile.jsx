@@ -12,6 +12,8 @@ import SettingsCard from "../../Components/WebComponents/SettingsCard";
 import badge1 from "../../assets/Images/sp_badge_grade_1.svg";
 import { useLocation, useNavigate } from "react-router-dom";
 import { getFromLocalStorage } from "../../Utils/presistStorage";
+import { userProfile } from "../../api/profile";
+import { useQueryFn } from "../../../hooks/queryFn";
 
 const CustomerProfile = () => {
   const location = useLocation();
@@ -20,6 +22,10 @@ const CustomerProfile = () => {
     "customerData",
     "User",
   );
+  const { data } = useQueryFn({
+    key: ["userProfile"],
+    fun: userProfile,
+  });
   return (
     <div
       style={{ backgroundImage: `url(${IconBackground})` }}
@@ -35,11 +41,11 @@ const CustomerProfile = () => {
           <div className=" pl-0 md:pl-4">
             <Content useMargin={false}>
               <div className="  flex flex-col md:flex-col items-center justify-center w-full max-w-full lg:max-w-[20.56rem]  ml-0 lg:ml-10 ">
-                <div className="relative">
+                <div className="relative ">
                   <img
-                    src={profile}
+                    src={data?.profile_picture_url || profile}
                     alt="profile picture"
-                    className="max-w-[8.75rem]"
+                    className="w-[8.75rem] h-[8.75rem] object-cover rounded-full"
                   />
                   <img
                     src={badge1}
@@ -60,7 +66,7 @@ const CustomerProfile = () => {
                     {email}
                   </p>
                   <p className="text-darkPurple font-semibold text-lg text-center  max-w-[46rem]">
-                    {phone_number}
+                    {data?.phone_number || phone_number}
                   </p>
                 </div>
               </div>

@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import PageTransition from "../../../Components/SharedComponents/PageTransition";
 const AccountCreatedSuccessfully = () => {
   return (
-    <div className="bg-[#f4e2fe] min-h-screen">
+    <div className="bg-[#f4e2fe] min-h-screen pb-20 px-4">
       <PageTransition>
         {/* <ConatinerWidth> */}
           <img

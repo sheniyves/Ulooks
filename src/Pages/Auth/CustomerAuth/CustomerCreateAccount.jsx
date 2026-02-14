@@ -25,6 +25,9 @@ import { buttonStatus as getButtonStatus } from "../../../Utils/updateStatus";
 import { useToast } from "../../../../hooks/useToast";
 import Toast from "../../../Components/Toast";
 import { setToLocalStorage } from "../../../Utils/presistStorage";
+import coupon from "../../../assets/Images/coupon.svg";
+import arrowLeft from "../../../assets/Images/arrow-left.svg";
+
 const CustomerCreateAccount = () => {
   const {
     register,
@@ -52,12 +55,14 @@ const CustomerCreateAccount = () => {
     mutationFn: (data) => createUserAccount(data),
     onMutate: () => setStatus("loading"),
     onSuccess: (data) => {
-      console.log("Success data", data);
-      showToast(data.message || "Account Created");
+      console.log("create account Success data", data);
+      if (data.data.statusCode !== 400) {
+        showToast(data.message || "Account Created");
+      }
 
       setToLocalStorage("userData", {
-        userId: data.data.id,
-        email: data.data.email,
+        userId: data.data.data.id,
+        email: data.data.data.email,
       });
 
       setStatus("success");
@@ -89,6 +94,7 @@ const CustomerCreateAccount = () => {
       phone_number: `+${data.phoneNumber}`,
       role: "user",
       gender: data.gender,
+      referral_code: data?.referralCode,
     };
     createAccount(payload);
   };
@@ -110,9 +116,18 @@ const CustomerCreateAccount = () => {
             </div>
 
             <div className=" -mt-4 md:mt-0 mi-h-screen overflow-y-auto px-4 md:px-6 py-10 pb-20 md:py-20 w-[100%] md:w-[90%] xl:w-[80%] no-scrollbar">
-              <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
-                Create Customer account
-              </h2>
+              <div className="flex items-center gap-4">
+                <Link to="/customerAuth/getStarted_SignUp">
+                  <img
+                    className="cursor-pointer"
+                    src={arrowLeft}
+                    alt="Arrow directing to left"
+                  />{" "}
+                </Link>
+                <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
+                  Create Customer account
+                </h2>
+              </div>
               <p className="text-darkPurple font-medium text-[1rem] mt-4">
                 Enter your details as they appear on your government ID to set
                 up your account and start booking services
@@ -138,20 +153,21 @@ const CustomerCreateAccount = () => {
                   placeholder="Enter your email address"
                 />
                 <div className="relative">
-                <SelectDropDown
-                  control={control}
+                  <SelectDropDown
+                    control={control}
                     name="gender"
-                    
-                  error={errors.gender?.message}
-                  label="Gender"
-                  list={[
-                    { value: "male", label: "Male" },
-                    { value: "female", label: "Female" },
-                    { value: "non_binary", label: "Non-binary" },
-                    { value: "prefer_not_to_say", label: "Prefer not to say" },
-                  ]}
-                />
-
+                    error={errors.gender?.message}
+                    label="Gender"
+                    list={[
+                      { value: "male", label: "Male" },
+                      { value: "female", label: "Female" },
+                      { value: "non_binary", label: "Non-binary" },
+                      {
+                        value: "prefer_not_to_say",
+                        label: "Prefer not to say",
+                      },
+                    ]}
+                  />
                 </div>
                 <PhoneNumberInput
                   control={control}
@@ -167,6 +183,20 @@ const CustomerCreateAccount = () => {
                   {...register("password")}
                   error={errors?.password?.message}
                 />
+                <div className="relative  ">
+                  <Input
+                    icon={coupon}
+                    label="Referral code"
+                    name="referralCode"
+                    inputType="text"
+                    placeholder="Enter First and Last name here"
+                    {...register("referralCode")}
+                    error={errors?.referralCode?.message}
+                  />
+                  <p className="text-sm text-gray absolute top-0 right-2">
+                    Optional
+                  </p>
+                </div>
 
                 <div className="relative mb-8">
                   <div className="my-6  mt-14 md:mt-8 flex items-center gap-4">

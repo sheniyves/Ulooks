@@ -38,7 +38,7 @@ const ServiceCategory = ({
       <ul className="mt-4 relative">
         <div>
           <div className="grid grid-cols-3 ">
-            {categories.map((category, index) => (
+            {categories?.map((category, index) => (
               <li key={index} className="flex items-center ">
                 <Radio
                   sx={{
@@ -61,31 +61,7 @@ const ServiceCategory = ({
               </li>
             ))}
           </div>
-          {/* <div className="flex flex-col">
-            {useSlice &&
-              categories.slice(4).map((category, index) => (
-                <li key={index} className="flex items-center ">
-                  <Radio
-                    sx={{
-                      color: { color },
-                      "&.Mui-checked": {
-                        color: { color },
-                      },
-                    }}
-                    checked={value.includes(category.value)}
-                    onChange={() => handleToggle(category.value)}
-                    value={category.value}
-                    id={category.value}
-                  />
-                  <label
-                    htmlFor={category.value}
-                    className={` ${textColor} font-medium text-sm`}
-                  >
-                    {category.label}
-                  </label>
-                </li>
-              ))}
-          </div> */}
+        
           <p className="text-red text-[.8rem] mt-[.5rem] font-semibold float-end  absolute right-0 bottom-4">
             {error?.message}
           </p>

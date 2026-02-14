@@ -317,3 +317,22 @@ nav {
     transform: translateX(0);
   }
 }
+
+/* Inspo */
+.media-slider {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+.media-slider::-webkit-scrollbar {
+  display: none;
+}
+
+.media-slide {
+  scroll-snap-align: start;
+  flex-shrink: 0;
+  width: 100%;
+}
+
+

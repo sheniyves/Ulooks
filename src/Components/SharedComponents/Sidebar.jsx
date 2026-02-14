@@ -6,10 +6,10 @@ import {
   getFromLocalStorage,
   setToLocalStorage,
 } from "../../Utils/presistStorage";
-import {
-  cNavs,
-  spNavs,
-} from "../../data/navs";
+import { cNavs, spNavs } from "../../data/navs";
+import { useQueryFn } from "../../../hooks/queryFn";
+import { userProfile } from "../../api/profile";
+import { Avatar } from "@mui/material";
 
 const Sidebar = ({
   activeBgColor = "#F4E2FE",
@@ -19,10 +19,9 @@ const Sidebar = ({
   navType = "customer",
 }) => {
   const [isActive, setIsActive] = React.useState(() =>
-    getFromLocalStorage("activeSidebarNav", "Home")
+    getFromLocalStorage("activeSidebarNav", "Home"),
   );
-  const navs =
-    navType === "customer" ? cNavs : spNavs;
+  const navs = navType === "customer" ? cNavs : spNavs;
 
   const IconColor =
     navType === "customer"
@@ -46,6 +45,11 @@ const Sidebar = ({
     setIsActive(nav.label);
     navigate(nav.to);
   };
+
+  const { data, isPending: isProfilePending } = useQueryFn({
+    key: ["userProfile"],
+    fun: userProfile,
+  });
   return (
     <motion.aside
       style={{ zIndex: 51 }}
@@ -62,15 +66,15 @@ const Sidebar = ({
             key={nav.label}
           >
             {nav.label === "Profile" ? (
-              <img
-                className={`border-2 border-[${profileBorderColor}] rounded-full`}
-                src={nav.icon}
+              <Avatar
+                className={`border-1 border-[${profileBorderColor}] rounded-full`}
+                src={data?.profile_picture_url || nav.icon}
                 alt={`${nav.label} icon`}
               />
             ) : (
               <img
                 src={nav.icon}
-                alt={`${nav.label} icon`}
+                alt={`${ nav.label} icon`}
                 style={
                   isActive === nav.label
                     ? {

@@ -28,9 +28,6 @@ const Step2 = () => {
       city: "",
       houseAddress: "",
       locationDescription: "",
-      recommendations: "",
-      serviceType: "",
-      discountNdOffers: "",
     },
     mode: "onSubmit",
   });
@@ -41,7 +38,6 @@ const Step2 = () => {
     handleSubmit,
     watch,
     setValue,
-    getValues,
     formState: { errors },
   } = form;
 
@@ -69,18 +65,16 @@ const Step2 = () => {
         locationDescription: z
           .string()
           .min(5, "Give a brief description about home address"),
-        recommendations: z.enum(["yes", "no"], {
-          errorMap: () => ({ message: "Select yes or no" }),
-        }),
-        serviceType: z.enum(["home_service", "vist_shop"], {
-          errorMap: () => ({ message: "Select your preference" }),
-        }),
-        discountNdOffers: z.enum(["yes", "no"], {
-          errorMap: () => ({ message: "Select yes or no" }),
-        }),
+        genderOfStylist: z.enum(
+          ["male", "female", "others", "not_gender_specific"],
+          {
+            errorMap: () => ({ message: "Select your preference" }),
+          },
+        ),
       });
     }
 
+   
     const countrySchema = z
       .enum(countryValues.length > 0 ? countryValues : ["dummy"])
       .refine((val) => val !== "", { message: "Select your country" });
@@ -100,24 +94,18 @@ const Step2 = () => {
         ? z.string().min(2, "Enter your city")
         : z.string().nullable().optional();
 
-    return z.object({
-      country: countrySchema,
-      state: stateSchema,
-      city: citySchema,
-      houseAddress: z.string().min(5, "Enter your home address"),
-      locationDescription: z
-        .string()
-        .min(5, "Give a brief description about home address"),
-      recommendations: z.enum(["yes", "no"], {
-        errorMap: () => ({ message: "Select yes or no" }),
-      }),
-      serviceType: z.enum(["home_service", "shop_service", "both"], {
-        errorMap: () => ({ message: "Select your preference" }),
-      }),
-      discountNdOffers: z.enum(["yes", "no"], {
-        errorMap: () => ({ message: "Select yes or no" }),
-      }),
-    });
+  return z.object({
+    country: countrySchema,
+    state: stateSchema,
+    city: citySchema,
+    houseAddress: z.string().min(5, "Enter your home address"),
+    locationDescription: z
+      .string()
+      .min(5, "Give a brief description about home address"),
+    genderOfStylist: z.enum(["male", "female", "others", "not_gender_specific"], {
+      errorMap: () => ({ message: "Select your preference" }),
+    }),
+  });
   }, [countryValues, stateValues, subdivisionCount]);
 
   useEffect(() => {
@@ -136,6 +124,7 @@ const Step2 = () => {
       setValue("city", "");
     }
   }, [getSelectedCountryCode, subdivisionCount, setValue]);
+
 
   const onSubmit = (data) => {
     console.log("Step 2 form submitted", data);
@@ -202,42 +191,20 @@ const Step2 = () => {
           {...register("locationDescription")}
           error={errors?.locationDescription?.message}
         />
-
         <SelectDropDown
           control={control}
-          name="recommendations"
-          error={errors.recommendations?.message}
-          label="Would you Like to receive recommendation based on location?"
-          placeholder="Select an option"
+          name="genderOfStylist"
+          error={errors.genderOfStylist?.message}
+          label={"Do you prefer a specific stylist gender?"}
+          placeholder={"Select an option"}
           list={[
-            { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
+            { value: "male", label: "Male" },
+            { value: "female", label: "Female" },
+            { value: "others", label: "Others" },
+            { value: "not_gender_specific", label: "Not gender specific" },
           ]}
+          //   defaultValue="male"
         />
-        <SelectDropDown
-          control={control}
-          name="serviceType"
-          error={errors.serviceType?.message}
-          label="Do you prefer home service or visiting a shop?"
-          placeholder="Select an option"
-          list={[
-            { value: "home_service", label: "Home Service" },
-            { value: "shop_service", label: "Visit Shop" },
-            { value: "both", label: "Both" },
-          ]}
-        />
-        <SelectDropDown
-          control={control}
-          name="discountNdOffers"
-          error={errors.discountNdOffers?.message}
-          label="Would you like to receive exclusive discounts & offers?"
-          placeholder="Select an option"
-          list={[
-            { value: "yes", label: "Yes" },
-            { value: "no", label: "No" },
-          ]}
-        />
-
         <Button
           type="submit"
           sx={{

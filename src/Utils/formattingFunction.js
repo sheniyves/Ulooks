@@ -7,13 +7,23 @@ export const handlePriceFormatting = (price) => {
   }
 };
 
-export function handleFormatting(amount) {
-  return new Intl.NumberFormat("en-NG", {
+export function handleFormatting(amount, currency = "NGN") {
+  const locale = currency === "USD" ? "en-US" : "en-NG";
+
+  return new Intl.NumberFormat(locale, {
     style: "currency",
-    currency: "NGN",
+    currency,
     minimumFractionDigits: 0,
-  }).format(amount);
+  }).format(Number(amount) || 0);
 }
+
+
+export const normalize = (str) =>
+  str
+    .toLowerCase()
+    .replace(/['’]/g, "")     // remove apostrophes
+    .replace(/&/g, "and")     // replace &
+    .replace(/\s+/g, "_");    // spaces → _
 
 export const handleDurationFormatting = (duration) => {
   if (duration >= 60) {

@@ -14,7 +14,7 @@ const GetStartedSignUp = () => {
           <ContainerHeight>
             <div className="flex items-center justify-center w-full min-h-screen">
               <div className="w-[92%] sm:w-[80%] md:w-[31.25rem]">
-                <div className="flex items-center justify-center mt-[8rem] md:mt-0">
+                <div className="flex items-center justify-center mt-[18rem] md:mt-20">
                   <img
                     src={logoWithText}
                     alt="Company's logo with text 'Where convinence meets quality' "
@@ -50,7 +50,7 @@ const GetStartedSignUp = () => {
                       Create account as Service Provider
                     </Button>
                   </Link>
-                  <Link to="#" style={{ width: "100%" }}>
+                  {/* <Link to="#" style={{ width: "100%" }}>
                     <div
                       style={{
                         position: "relative",
@@ -73,7 +73,7 @@ const GetStartedSignUp = () => {
                         Sign in as Organization
                       </Button>
                     </div>
-                  </Link>
+                  </Link> */}
                 </div>
                 
                 <p className="text-[#2f034e] font-bold text-center mt-12">

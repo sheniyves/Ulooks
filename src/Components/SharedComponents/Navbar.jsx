@@ -12,8 +12,14 @@ import Notification from "../WebComponents/Notification";
 import Location from "../WebComponents/Location";
 import { notifications } from "../../data/notification";
 import { getFromLocalStorage } from "../../Utils/presistStorage";
+import { useQueryFn } from "../../../hooks/queryFn";
+import { userProfile } from "../../api/profile";
 
 const Navbar = () => {
+    const { data } = useQueryFn({
+      key: ["userProfile"],
+      fun: userProfile,
+    });
    const {name} = getFromLocalStorage("customerData", "User")
   const { inputRef, setDebounceValue } = useSearchCtx();
   const dialogRef = React.useRef(null);
@@ -60,7 +66,7 @@ const Navbar = () => {
               <img src={notificationIcon} alt="notification icon" />
             </IconButton>
           </Tooltip>
-          <Profile to={"/customerWebApp/profile"} name={name} type={"Customer"} />
+          <Profile profile={data?.profile_picture_url} to={"/customerWebApp/profile"} name={data?.name || name}  type={"Customer"} />
         </div>
 
         <Notification dialogRef={dialogRef} notifications={notifications} />

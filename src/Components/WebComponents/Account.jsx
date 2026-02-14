@@ -20,13 +20,13 @@ import { useToast } from "../../../hooks/useToast";
 import Toast from "../Toast";
 import { useQueryClient } from "@tanstack/react-query";
 
-const Account = ({ drawerRef, data }) => {
+const Account = ({ drawerRef, data, isProfilePending }) => {
   const [status, setStatus] = React.useState("idle");
   const { name, email, phone_number, gender } = getFromLocalStorage(
     "customerData",
     "User",
   );
-  const queryClient= useQueryClient()
+  const queryClient = useQueryClient();
   const { toastMessage, toastRef, showToast } = useToast();
   const buttonStatus = {
     idle: {
@@ -69,7 +69,7 @@ const Account = ({ drawerRef, data }) => {
     onSuccess: (data) => {
       setStatus("success");
       showToast(data.message || "Profile edited!", 2000);
-      queryClient.invalidateQueries(["userProfile"])
+      queryClient.invalidateQueries(["userProfile"]);
       setTimeout(() => {
         drawerRef.current?.closeDrawer();
       }, 2000);
@@ -99,10 +99,10 @@ const Account = ({ drawerRef, data }) => {
   } = useForm({
     resolver: zodResolver(accountSchema),
     defaultValues: {
-      state: data.state,
-      city: data.city,
-      address: data.address,
-      phoneNumber: data.phone_number,
+      state: data?.state,
+      city: data?.city,
+      address: data?.address,
+      phoneNumber: data?.phone_number,
     },
   });
   const onSubmit = (data) => {
@@ -126,7 +126,11 @@ const Account = ({ drawerRef, data }) => {
       </Toast>
       <DrawerHeader drawerRef={drawerRef} title={"Account"} />
       <div className="flex flex-col items-center justify-center h-full">
-        <ProfileUpload drawerRef={drawerRef} />
+        <ProfileUpload
+          profilePicture={data?.profile_picture_url}
+          isProfilePending={isProfilePending}
+          drawerRef={drawerRef}
+        />
         <div className="text-center">
           <h2 className="font-fashion capitalize mt-4 mb-2 font-bold  text-[1.75rem] text-[#6A0DAD]">
             {name}
@@ -135,7 +139,7 @@ const Account = ({ drawerRef, data }) => {
             {email}
           </p>
           <p className="text-darkPurple font-semibold text-lg text-center max-w-[46rem]">
-            {phone_number}
+            {data?.phone_number || phone_number}
           </p>
         </div>
         <form
@@ -178,7 +182,7 @@ const Account = ({ drawerRef, data }) => {
             />
 
             <p className="text-sm text-gray text-right">
-              These Fields can't be edited.
+              These fields can't be edited.
             </p>
           </div>
 

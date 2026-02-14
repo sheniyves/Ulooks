@@ -1,9 +1,9 @@
 import React from "react";
-import profile from "../../assets/Images/profileNav.svg";
-import { Zoom, Tooltip } from "@mui/material";
+import defaultProfile from "../../assets/Images/profileNav.svg";
+import { Zoom, Tooltip, Avatar } from "@mui/material";
 import { Link } from "react-router-dom";
 
-const Profile = ({to, name, type, }) => {
+const Profile = ({ to, name, type, profile }) => {
   return (
     <Tooltip
       title="Profile"
@@ -13,7 +13,7 @@ const Profile = ({to, name, type, }) => {
     >
       <Link to={to}>
         <div className="flex items-center gap-2 cursor-pointer">
-          <img src={profile} alt="profile icon" />
+          <Avatar src={profile || defaultProfile} alt="profile icon" />
           <div>
             <p className="text-sm text-darkerPurple capitalize font-bold whitespace-nowrap ">
               {name}

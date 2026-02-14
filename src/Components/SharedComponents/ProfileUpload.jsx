@@ -6,10 +6,13 @@ import editIcon from "../../assets/Images/edit.svg";
 import { useMutationFn } from "../../../hooks/queryFn";
 import { userProfilePicture } from "../../api/profile";
 import { useToast } from "../../../hooks/useToast";
+import { useQueryClient } from "@tanstack/react-query";
 import Toast from "../Toast";
+import { CircularProgress, Skeleton } from "@mui/material";
 
-const ProfileUpload = ({ drawerRef }) => {
+const ProfileUpload = ({ drawerRef, profilePicture, isProfilePending }) => {
   const profileRef = React.useRef(null);
+  const queryClient = useQueryClient();
   const [uploadedPicture, setUploadedPicture] = React.useState(null);
   const { toastMessage, toastRef, showToast } = useToast();
   const handleFileChange = (e) => {
@@ -19,7 +22,6 @@ const ProfileUpload = ({ drawerRef }) => {
       console.log("Selected file:", file);
     }
   };
-//88
   const {
     mutate: sendProfilePicture,
     isPending,
@@ -28,8 +30,9 @@ const ProfileUpload = ({ drawerRef }) => {
   } = useMutationFn({
     key: ["profilePicture"],
     fun: (data) => userProfilePicture(data),
-    onSuccess: (data) => {
-      showToast(data.message || "Profile Updated", 2000);
+    onSuccess: () => {
+      showToast("Profile Updated", 2000);
+      queryClient.invalidateQueries(["userProfile"]);
       setTimeout(() => {
         drawerRef.current?.closeDrawer();
       }, 2000);
@@ -53,19 +56,29 @@ const ProfileUpload = ({ drawerRef }) => {
       <Toast ref={toastRef} status={isSuccess ? "success" : "error"}>
         {toastMessage}
       </Toast>
-      {uploadedPicture ? (
+      {profilePicture ? (
         <>
-          <img
-            src={URL.createObjectURL(uploadedPicture)}
-            alt="Uploaded preview"
-            className="object-cover w-full h-full rounded-full "
-          />
-          <img
-            onClick={() => profileRef.current?.click()}
-            src={editIcon}
-            className="absolute right-0 bottom-7 bg-white rounded-lg cursor-pointer z-10"
-            alt="Edit icon"
-          />
+          {isProfilePending ? (
+            <CircularProgress color="#6A0DAD" />
+          ) : (
+            <>
+              <img
+                src={
+                  uploadedPicture
+                    ? URL.createObjectURL(uploadedPicture)
+                    : profilePicture
+                }
+                alt="Profile"
+                className="object-cover w-full h-full rounded-full"
+              />
+              <img
+                onClick={() => profileRef.current?.click()}
+                src={editIcon}
+                className="absolute right-0 bottom-7 bg-white rounded-lg cursor-pointer z-10"
+                alt="Edit icon"
+              />
+            </>
+          )}
         </>
       ) : (
         <div>

@@ -1,6 +1,7 @@
 import axiosInstance from "./axiosInstance";
 
 export const createUserAccount = async (payload) => {
+  console.log({payload})
   try {
     const response = await axiosInstance.post("auth/register", payload);
     return { success: true, data: response.data }; // return success response

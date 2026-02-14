@@ -32,11 +32,11 @@ const CustomerInspiration = () => {
 
   return (
     <div className=" mt-0 lg:mt-6 min-h-screen relative">
+      <UploadInspo uploadRef={uploadRef} uploadRefDialog={uploadRefDialog} />
       <ConatinerWidth>
         <DownloadApp downloadOnAppRef={downloadOnAppRef} />
-        <UploadInspo uploadRef={uploadRef} uploadRefDialog={uploadRefDialog} />
         <div className="ml-0 lg:ml-[310px] mt-0 lg:mt-[5.7rem] bg-[#E7CBFB] sticky top-0 z-10">
-          <div className=" px-4 md:px-0 flex items-center justify-between mx-auto max-w-[31.25rem] h-16 md:h-14">
+          {/* <div className=" px-4 md:px-0 flex items-center justify-between mx-auto max-w-[31.25rem] h-16 md:h-14">
             <h3 className="text-sm font-bold text-darkPurple">
               Activate lite mode for less content
             </h3>
@@ -51,7 +51,7 @@ const CustomerInspiration = () => {
             >
               Turn On
             </Button>
-          </div>
+          </div> */}
         </div>
 
         <Sidebar />
@@ -61,7 +61,7 @@ const CustomerInspiration = () => {
           {/* <Content useMargin={false}> */}
           <div className="ml-0 lg:ml-[320px]">
             <div className="  sticky top-60 w-full mx-auto max-w-full md:max-w-[31.25rem] mt-4">
-              <div className="flex items-center justify-between px-4">
+              {/* <div className="flex items-center justify-between px-4">
                 <h2 className="font-bold text-transparent bg-gold-purple inline-block bg-clip-text font-fashion text-[1.76rem]">
                   Inspiration
                 </h2>
@@ -70,8 +70,10 @@ const CustomerInspiration = () => {
                 >
                   <img src={addPlus} alt="Add icon" />
                 </IconButton>
+              </div> */}
+              <div className="relative w-full overflow-hidden ">
+                <InspoTabs value={value} onSelect={handleChange} />
               </div>
-              <InspoTabs value={value} onSelect={handleChange} />
             </div>
           </div>
           {/* </Content> */}

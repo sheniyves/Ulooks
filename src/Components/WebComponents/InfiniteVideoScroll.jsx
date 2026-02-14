@@ -1,75 +1,173 @@
-import React from "react";
-import { inspoData } from "../../data/inspoData";
-import { Avatar, IconButton } from "@mui/material";
-import commentsIcon from "../../assets/Images/messages.svg";
-import eyeIcon from "../../assets/Images/eye.svg";
-import inspoMenu from "../../assets/Images/menuInspo.svg";
-import LikeButton from "../SharedComponents/LikeButton";
+import React, { useEffect, useRef, useState } from "react";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { getInspo } from "../../api/inspo";
+import PostCard from "./PostCard";
+import { CircularProgress } from "@mui/material";
+import noContent from "../../assets/Images/video.png";
+import backgroundIcon from "../../assets/Images/formIcons.svg";
+import customLoader from "../../assets/Animations/customLoader.json";
+import Lottie from "lottie-react";
 
-const InfiniteVideoScroll = () => {
-  const icons = [commentsIcon, eyeIcon, inspoMenu];
+const LIMIT = 6;
+
+const InfiniteVideoScroll = ({uploadRefDialog}) => {
+  const loadMoreRef = useRef(null);
+  const containerRef = useRef(null);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
+    useInfiniteQuery({
+      queryKey: ["inspo"],
+      queryFn: ({ pageParam = 0 }) =>
+        getInspo({ offset: pageParam, limit: LIMIT }),
+      getNextPageParam: (lastPage) => {
+        const items = lastPage?.data?.items || [];
+        const currentOffset = lastPage?.data?.offset || 0;
+        return items.length < LIMIT ? undefined : currentOffset + LIMIT;
+      },
+      initialPageParam: 0,
+    });
+
+  const posts = data?.pages.flatMap((page) => page?.data?.items || []) || [];
+
+
+  // Handle navigation
+  const handleNavigate = (direction) => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const viewportHeight = container.clientHeight;
+    const newIndex = direction === "up" ? activeIndex - 1 : activeIndex + 1;
+
+    if (newIndex >= 0 && newIndex < posts.length) {
+      container.scrollTo({
+        top: newIndex * viewportHeight,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  // Handle keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        handleNavigate("down");
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        handleNavigate("up");
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeIndex, posts.length]);
+
+  // Detect which post is currently in view
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleScroll = () => {
+      const scrollPosition = container.scrollTop;
+      const viewportHeight = container.clientHeight;
+      const newIndex = Math.round(scrollPosition / viewportHeight);
+      setActiveIndex(newIndex);
+    };
+
+    container.addEventListener("scroll", handleScroll);
+    return () => container.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!loadMoreRef.current || !hasNextPage) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && hasNextPage && !isFetchingNextPage) {
+          fetchNextPage();
+        }
+      },
+      { threshold: 1 },
+    );
+
+    observer.observe(loadMoreRef.current);
+    return () => observer.disconnect();
+  }, [fetchNextPage, hasNextPage, isFetchingNextPage]);
+
+  if (isLoading)
+    return (
+      <div
+        className="text-center fixed inset-0 w-full h-full z-[2000] bg-black/95 flex items-center flex-col justify-center  min-h-screen"
+        // style={{
+        //   backgroundImage: `url(${backgroundIcon})`,
+        //   backgroundRepeat: "no-repeat",
+        // }}
+      >
+        <Lottie
+          animationData={customLoader}
+          loop={true}
+          className="w-24 h-24 mx-auto"
+        />
+      </div>
+    );
+
+  if (posts.length === 0)
+    return (
+      <div className="text-center min-h-screen flex items-center justify-center flex-col gap-4  ">
+        <div className="w-[7rem] h-[7rem] shadow-sm p-6 flex-shrink-0 rounded-full bg-purple/20 ">
+          <img src={noContent} alt="No inspo available" />
+        </div>
+        <p className="font-urbanist text-lg">No posts found.</p>
+      </div>
+    );
   return (
-    <div className="pb-20">
-      {inspoData.map((item) => (
-        <div key={item.id}>
+    <div
+      ref={containerRef}
+      className="h-[calc(100vh-4rem)] overflow-y-scroll snap-y snap-mandatory scroll-smooth"
+      style={{
+        scrollbarWidth: "none",
+        msOverflowStyle: "none",
+      }}
+    >
+      <style jsx>{`
+        div::-webkit-scrollbar {
+          display: none;
+        }
+      `}</style>
+
+      {posts.map((item, idx) => (
+        <PostCard
+          key={item.id}
+          item={item}
+          isActive={idx === activeIndex}
+          onNavigate={handleNavigate}
+          
+        />
+      ))}
+
+      <div
+        ref={loadMoreRef}
+        className="h-[calc(100vh-4rem)] snap-start flex items-center justify-center"
+      />
+
+      {isFetchingNextPage && (
+        <div className="h-[calc(100vh-4rem)] snap-start flex items-center justify-center ">
           <div
+            className="text-center  bg-purple/20 flex items-center flex-col justify-center h-full min-h-screen"
             style={{
-              backgroundImage: `url(${item.image})`,
+              backgroundImage: `url(${backgroundIcon})`,
               backgroundRepeat: "no-repeat",
-              backgroundSize: "cover",
-              height: "100%",
-              width: "100%",
-              aspectRatio: "3/4",
-              objectFit: "cover",
-              maxHeight: "400px",
-           
             }}
           >
-            <div className=" h-full flex flex-col justify-end  items-end pr-4 pb-4">
-              <div className="flex flex-col items-center ">
-                <IconButton>
-                  <LikeButton />
-                </IconButton>
-                  <span className="text-white">3.6k</span>
-                <div>
-                  <div className="flex flex-col items-center text-white text-sm">
-                    <IconButton>
-                      <img src={icons[0]} alt="chat icon" />
-                    </IconButton>
-                    <span>19</span>
-                  </div>
-                  <div className="flex flex-col items-center text-white text-sm">
-                    <IconButton>
-                      <img src={icons[1]} alt="chat icon" />
-                    </IconButton>
-                    <span>89</span>
-                  </div>
-                  <div className="flex flex-col items-center text-white text-sm">
-                    <IconButton>
-                      <img src={icons[2]} alt="chat icon" />
-                    </IconButton>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="px-4 mt-4">
-
-          <p className="text-[#475467] font-xs mb-6 text-normal">
-            {item.description}
-          </p>
-          <div className="flex items-center gap-2 mb-5 pl-4">
-            <Avatar src={item.profile} sx={{ width: 52, height: 52 }} />
-            <div>
-              <p className="text-darkPurple font-fashion font-bold text-2xl">
-                {item.name}
-              </p>
-            </div>
-            </div>
+            <Lottie
+              animationData={customLoader}
+              loop={true}
+              className="w-24 h-24 mx-auto"
+            />
           </div>
         </div>
-      ))}
+      )}
     </div>
   );
 };
