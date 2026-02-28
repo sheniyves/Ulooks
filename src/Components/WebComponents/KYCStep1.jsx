@@ -7,7 +7,7 @@ import calendar from "../../assets/Images/calendar.svg";
 import sms from "../../assets/Images/sms.svg";
 import SelectDropDown from "./SelectDropDown";
 import Button from "./Button";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateStep } from "../../redux/formStepsSlice";
 import Input2 from "./Input2";
 import SelectDropDown2 from "./SelectDropown2";
@@ -40,10 +40,10 @@ const KYCStep1 = ({ useBaseColor = true }) => {
 
   const KycSchemaStep1 = z.object({
     fullName: z.string().min(2, "Full name is required"),
-    country: z.enum(countryValues, {
-      required_error: "Select your country",
-      invalid_type_error: "Country needs to be selected"
-    }),
+    // country: z.enum(countryValues, {
+    //   required_error: "Select your country",
+    //   invalid_type_error: "Country needs to be selected"
+    // }),
     phoneNumber: z.string().min(11, "Phone number is required"),
     gender: z.enum(["male", "female"], {
       required_error: "Select your gender",
@@ -53,6 +53,7 @@ const KYCStep1 = ({ useBaseColor = true }) => {
       .string({ required_error: "Email is required" })
       .email("Invalid email address"),
   });
+  const step1Data = useSelector((state) => state.kycData.customerKycForm.step1);
   const {
     handleSubmit,
     formState: { errors },
@@ -60,7 +61,14 @@ const KYCStep1 = ({ useBaseColor = true }) => {
     control,
   } = useForm({
     resolver: zodResolver(KycSchemaStep1),
-  
+    defaultValues: {
+      fullName: step1Data.fullName,
+      phoneNumber: step1Data.phoneNumber,
+      dateOfBirth: step1Data.dateOfBirth,
+      gender: step1Data.gender,
+      email: step1Data.email,
+      country: step1Data.country
+    }
   });
 
   const dispatch = useDispatch();

@@ -10,7 +10,7 @@ import Lottie from "lottie-react";
 
 const LIMIT = 6;
 
-const InfiniteVideoScroll = ({uploadRefDialog}) => {
+const InfiniteVideoScroll = ({ uploadRefDialog }) => {
   const loadMoreRef = useRef(null);
   const containerRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -29,7 +29,6 @@ const InfiniteVideoScroll = ({uploadRefDialog}) => {
     });
 
   const posts = data?.pages.flatMap((page) => page?.data?.items || []) || [];
-
 
   // Handle navigation
   const handleNavigate = (direction) => {
@@ -97,13 +96,7 @@ const InfiniteVideoScroll = ({uploadRefDialog}) => {
 
   if (isLoading)
     return (
-      <div
-        className="text-center  bg-black/90 fixed w-full z-[3000] inset-0 -bottom-10 flex items-center flex-col justify-center h-full min-h-screen"
-        // style={{
-        //   backgroundImage: `url(${backgroundIcon})`,
-        //   backgroundRepeat: "no-repeat",
-        // }}
-      >
+      <div className="text-center   bg-black/90 fixed w-full z-[3000] inset-0 -bottom-10 flex items-center flex-col justify-center h-full min-h-screen">
         <Lottie
           animationData={customLoader}
           loop={true}
@@ -114,7 +107,13 @@ const InfiniteVideoScroll = ({uploadRefDialog}) => {
 
   if (posts.length === 0)
     return (
-      <div className="text-center min-h-screen flex items-center justify-center flex-col gap-4  ">
+      <div
+        className="text-center w-full max-w-[500px]      min-h-screen flex items-center justify-center flex-col gap-4  "
+        style={{
+          backgroundImage: `url(${backgroundIcon})`,
+          backgroundRepeat: "no-repeat",
+        }}
+      >
         <div className="w-[7rem] h-[7rem] shadow-sm p-6 flex-shrink-0 rounded-full bg-purple/20 ">
           <img src={noContent} alt="No inspo available" />
         </div>
@@ -142,7 +141,6 @@ const InfiniteVideoScroll = ({uploadRefDialog}) => {
           item={item}
           isActive={idx === activeIndex}
           onNavigate={handleNavigate}
-          
         />
       ))}
 

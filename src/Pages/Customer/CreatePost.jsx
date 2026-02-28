@@ -38,6 +38,7 @@ const CreatePost = () => {
     if (!files.length) return;
 
     const mapped = files.map((file) => ({
+      id: files.length,
       file,
       preview: URL.createObjectURL(file),
     }));

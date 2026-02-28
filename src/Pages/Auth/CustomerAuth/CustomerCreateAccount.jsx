@@ -167,6 +167,7 @@ const CustomerCreateAccount = () => {
                         label: "Prefer not to say",
                       },
                     ]}
+                    
                   />
                 </div>
                 <PhoneNumberInput
@@ -189,7 +190,7 @@ const CustomerCreateAccount = () => {
                     label="Referral code"
                     name="referralCode"
                     inputType="text"
-                    placeholder="Enter First and Last name here"
+                    placeholder="Enter referral code here"
                     {...register("referralCode")}
                     error={errors?.referralCode?.message}
                   />

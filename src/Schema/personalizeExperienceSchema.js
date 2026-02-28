@@ -1,11 +1,4 @@
 import { z } from "zod";
-//Date that passes
-/*"2025-05-16"
-"May 16, 2025"
-"16 May 2025"
-"05/16/2025" */
-import { validCities } from "../../helper/locations";
-import { validCountries } from "../../helper/selectOptions";
 import { serviceOptions } from "../Utils/serviceOptions";
 
 // CUSTOMER EXPERIENCE
@@ -41,47 +34,6 @@ export const step1Schema = z.object({
     }),
 });
 
-// export const step2Schema = (validStates, validCountries) => {
-//   const countryValues = validCountries.map((c) => c.value);
-//   const stateValues = validStates.map((s) => s.value);
-
-//   return z.object({
-//     country: z
-//       .enum(countryValues)
-//       .nullable()
-//       .refine((val) => val !== null, {
-//         message: "Select your country",
-//       }),
-
-//     state: z
-//       .enum(stateValues)
-//       .nullable()
-//       .refine((val) => val !== null, {
-//         message: "Select a state you live in",
-//       }),
-
-//     city: z.string().min(5, "Enter your home address"),
-
-//     houseAddress: z.string().min(5, "Enter your home address"),
-
-//     locationDescription: z
-//       .string()
-//       .min(5, "Give a brief description about home address"),
-
-//     recommendations: z.enum(["yes", "no"], {
-//       errorMap: () => ({ message: "Select yes or no" }),
-//     }),
-
-//     serviceType: z.enum(["home_service", "vist_shop"], {
-//       errorMap: () => ({ message: "Select your preference" }),
-//     }),
-
-//     discountNdOffers: z.enum(["yes", "no"], {
-//       errorMap: () => ({ message: "Select yes or no" }),
-//     }),
-//   });
-// };
-
 export const step3Schema = z.object({
   genderOfStylist: z.enum(["male", "female", "others", "not_gender_specific"], {
     errorMap: () => ({ message: "Select your preference" }),
@@ -110,15 +62,6 @@ export const step1SchemaSP = z.object({
   serviceProviderLGA: z.string().min(2, "Enter LGA area"),
 });
 
-const dayOfWeekSchema = z.enum([
-  "monday",
-  "tuesday",
-  "wednesday",
-  "thursday",
-  "friday",
-  "saturday",
-  "sunday",
-]);
 
 export const workTypeSchema = z.enum(["Shop", "Home services", "Events"]);
 
@@ -325,7 +268,6 @@ export const createServiceSchema = z.object({
     }
   ),
 
-  // tag: z.string().min(2, "Enter your tag name"),
 
   amount: z
     .number({

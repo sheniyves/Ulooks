@@ -124,7 +124,7 @@ if (isSubmitted) {
         <Navbar />
         <PageTransition>
           <div className="flex items-center justify-between  max-w-full xl:max-w-[75%] mb-10 ">
-            <Header onClick={() => navigate(-1)} iconPresence={false}>
+            <Header onClick={() => navigate(-1)} iconPresence >
               <div className="flex items-center gap-2 cursor-pointer">
                 <img src={arrowLeft} alt="arrow left icon" />
                 Add funds

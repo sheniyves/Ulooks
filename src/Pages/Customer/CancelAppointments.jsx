@@ -24,7 +24,7 @@ const CancelAppointments = () => {
           <PageTransition>
             <div>
               <div className=" mt-4 lg:mt-[8.5rem]" />
-              <Header iconPresence={false}>
+              <Header iconPresence >
                 <div className="flex items-center gap-2 cursor-pointer">
                   <img src={arrowLeft} alt="arrow left icon" />
                   Cancel Appointment

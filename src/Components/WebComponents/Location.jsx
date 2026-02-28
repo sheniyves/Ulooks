@@ -47,9 +47,7 @@ const Location = ({ locationRef }) => {
             ))}
           </ul>
           <Button
-            fontWeight={600}
             sx={{
-              backgroundColor: "#6A0DAD",
               width: "100%",
               color: "#fff",
               marginTop: "1rem",
@@ -62,7 +60,6 @@ const Location = ({ locationRef }) => {
             Change Location
           </Button>
           <Button
-            fontWeight={600}
             sx={{
               backgroundColor: "transparent",
               width: "100%",

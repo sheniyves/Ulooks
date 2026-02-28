@@ -14,9 +14,18 @@ const MediaSlider = ({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [selectedMusic, setSelectedMusic] = useState(null);
+  const [prvFiles, setPrvFiles] = useState( []);
   const [tags, setTags] = useState([]);
 
   // Reset currentIndex if it's out of bounds
+  console.log({ previewFiles });
+
+  const handleRemoveFile = (index) => {
+    if (previewFiles.length === 0) return
+    // const idx = previewFiles.findIndex(q => )
+    // const tt = previewFiles.filter((f) => findIndexOf(f) !== index)
+    // setPrvFiles((pv) =>  ...pv.filter(index) => )
+  };
   useEffect(() => {
     if (currentIndex >= previewFiles.length && previewFiles.length > 0) {
       setCurrentIndex(previewFiles.length - 1);
@@ -54,7 +63,7 @@ const MediaSlider = ({
   }
 
   const openMusicDialog = () => {
-     onOpenMusic?.();
+    onOpenMusic?.();
     musicSelectorRef.current?.openDialog();
   };
 
@@ -121,7 +130,7 @@ const MediaSlider = ({
         </AnimatePresence>
 
         {/* Top Right Action Buttons */}
-        <div className="absolute top-4 right-4 z-[10] flex flex-col gap-2">
+        <div className="absolute top-4 right-4 z-[10] flex flex-col items-end gap-2">
           {/* Counter */}
           <div className="bg-black/60 shadow-lg text-white px-3 py-1 rounded-full text-sm text-center">
             {currentIndex + 1} / {previewFiles.length}
@@ -130,21 +139,21 @@ const MediaSlider = ({
           {/* Add Music Button */}
           <IconButton
             onClick={openMusicDialog}
-            className="bg-black/60 hover:bg-black/80"
-            sx={{
+            className="bg-black/60 hover:bg-black/80 w-9 h-9 rounded-full flex items-center justify-center"
+            style={{
               backgroundColor: "rgba(0, 0, 0, 0.6)",
               "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.8)" },
               borderRadius: "50%",
             }}
             aria-label="Add music"
           >
-            <MusicNoteIcon sx={{ color: "white" }} />
+            <MusicNoteIcon sx={{ color: "white", fontSize: 20 }} />
           </IconButton>
 
           {/* Tag People Button */}
           <IconButton
             onClick={() => onTagPeople?.()}
-            className="bg-black/60 hover:bg-black/80"
+            className="bg-black/60 hover:bg-black/80 w-9 h-9 rounded-full flex items-center justify-center"
             sx={{
               backgroundColor: "rgba(0, 0, 0, 0.6)",
               "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.8)" },
@@ -153,6 +162,19 @@ const MediaSlider = ({
             aria-label="Tag people"
           >
             <LocalOfferIcon sx={{ color: "white", fontSize: 20 }} />
+          </IconButton>
+
+          <IconButton
+            onClick={() => handleRemoveFile(currentIndex)}
+            className="bg-black/60 hover:bg-black/80 w-9 h-9 rounded-full flex items-center justify-center"
+            sx={{
+              backgroundColor: "rgba(0, 0, 0, 0.6)",
+              "&:hover": { backgroundColor: "rgba(0, 0, 0, 0.8)" },
+              padding: "8px",
+            }}
+            aria-label="Tag people"
+          >
+            <CloseIcon sx={{ color: "white", fontSize: 20 }} />
           </IconButton>
         </div>
 

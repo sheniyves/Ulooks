@@ -42,7 +42,7 @@ const KYCStep2 = ({ useBaseColor = true }) => {
   const buttonHoverColor = useBaseColor ? "#5a0a99" : "#dc7c06";
   const imageUpload = useBaseColor ? false : true ;
   return (
-    <div className=" min-w-none md:min-w-[530px] mt-16">
+    <div className=" min-w-none md:min-w-[530px] ">
       <h2 className={`font-fashion text-2xl ${color}`}>
         🆔 Government Identity Verification
       </h2>

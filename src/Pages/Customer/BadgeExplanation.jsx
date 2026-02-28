@@ -17,14 +17,14 @@ const BadgeExplanation = () => {
   const navigate = useNavigate();
   const location = useLocation();
   return (
-    <div className=" mt-6 ">
+    <div className=" mt-6 pb-20">
       <ConatinerWidth>
         <Sidebar />
         <Navbar />
         <PageTransition>
           <div className="flex items-center justify-between  max-w-full xl:max-w-[75%] ">
             <Header
-              iconPresence={false}
+              iconPresence 
               onClick={() => navigate(location.state.previousUrl)}
             >
               <div className="flex items-center gap-2 cursor-pointer">

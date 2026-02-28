@@ -13,9 +13,9 @@ const Header = ({ children, icon, action, iconPresence = true, ...props }) => {
       <div className=" flex items-center justify-between -mt-0 md:-mt-8 -mb-3">
         <h1
           {...props}
-          onClick={!iconPresence ? handleNavigateBack : null}
+          onClick={ iconPresence ? handleNavigateBack : null}
           className={`font-bold text-transparent bg-gold-purple inline-block bg-clip-text font-fashion  text-[1.75rem]  ${
-            !iconPresence ? "cursor-pointer" : "cursor-default"
+             iconPresence ? "cursor-pointer" : "cursor-default"
           }`}
         >
           {children}

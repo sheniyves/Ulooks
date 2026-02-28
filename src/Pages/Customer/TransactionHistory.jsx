@@ -23,7 +23,7 @@ const TransactionHistory = () => {
         <Navbar />
         <PageTransition>
           <div className="flex items-center justify-between  max-w-full xl:max-w-[75%] ">
-            <Header onClick={() => navigate(-1)} iconPresence={false}>
+            <Header onClick={() => navigate(-1)} iconPresence >
               <div className="flex items-center gap-2 cursor-pointer">
                 <img src={arrowLeft} alt="arrow left icon" />
                 Transaction History

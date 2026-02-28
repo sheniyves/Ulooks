@@ -31,7 +31,7 @@ const WalletCard = () => {
           </button>
         </div>
         <div className="rounded-lg shadow-md bg-[#F9F4FC] text-darkPurple font-bold">
-          <Link to={"/customerWebApp/addFunds"}>
+          <Link to={"/customerWebApp/wallet/addFunds"}>
             <ButtonBase
               sx={{
                 width: "100%",
@@ -53,7 +53,7 @@ const WalletCard = () => {
         <h1 className="text-[3rem] font-semibold text-[#FDFDFD]">
           {showBalance ? handleFormatting(9051) : "••••••"}
         </h1>
-        <Link to={"/customerWebApp/withdraw"}>
+        <Link to={"/customerWebApp/wallet/withdraw"}>
           <div
             style={{
               cursor: "pointer",

@@ -167,7 +167,7 @@ const KYCStep4 = ({ useBaseColor = true }) => {
   const descColor = useBaseColor ? "text-darkerPurple" : "text-yellow_gold";
 
   return (
-    <div className="min-w-none md:min-w-[530px] mt-16">
+    <div className="min-w-none md:min-w-[530px] mt-4">
       <Toast ref={toastRef} status={isSuccess ? "success" : "error"}>
         {toastMessage}
       </Toast>

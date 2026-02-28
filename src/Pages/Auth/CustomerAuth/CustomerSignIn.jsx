@@ -131,7 +131,7 @@ const CustomerSignIn = () => {
                     alt="Arrow directing to left"
                   />{" "}
                 </Link>
-                <h2 className="text-darkerPurple font-fashion text-[1.75rem] font-bold">
+                <h2 className="text-center text-darkerPurple font-fashion text-[1.75rem] font-bold">
                   Welcome back, Customer👋
                 </h2>
               </div>

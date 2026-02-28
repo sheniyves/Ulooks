@@ -19,8 +19,9 @@ const ServiceCategories = () => {
   return (
     <div className="mt-4">
       <h2 className="text-darkerPurple font-fashion font-bold text-2xl">
-        Service Categories for Men & Women
+       Explore Services
       </h2>
+      <p className="text-gray text-sm">Premium beauty & wellness services at your doorstep.</p>
       <div>
         {true ? (
           <ul className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-4 w-full xl:w-[65%]">

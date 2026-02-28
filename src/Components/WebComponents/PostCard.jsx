@@ -19,20 +19,24 @@ const PostCard = ({ item, isActive, onNavigate }) => {
   // Use the media array from the API response
   const mediaList = item?.media || [];
   const [index, setIndex] = useState(0);
-  const [liked, setLiked] = useState(false, idx);
+  const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const [following, setFollowing] = useState(
-    item?.author?.is_following || false
+    item?.author?.is_following || false,
   );
   const [touchStart, setTouchStart] = useState(null);
   const [touchEnd, setTouchEnd] = useState(null);
 
   const videoRef = useRef(null);
 
-     const { mutate: like, isPending, isError } = useMutationFn({
-        key: ['likePost'],
-        fun: likePost
-    })
+  const {
+    mutate: like,
+    isPending,
+    isError,
+  } = useMutationFn({
+    key: ["likePost"],
+    fun: likePost,
+  });
 
   if (mediaList.length === 0) return null;
 
@@ -82,9 +86,7 @@ const PostCard = ({ item, isActive, onNavigate }) => {
     if (isRightSwipe && index > 0) {
       setIndex(index - 1);
     }
-    };
-    
-   
+  };
 
   return (
     <>
@@ -102,7 +104,7 @@ const PostCard = ({ item, isActive, onNavigate }) => {
               src={currentMedia.url}
               className="w-full h-full object-cover"
               loop
-            //   muted
+              //   muted
               playsInline
             />
           ) : (

@@ -264,11 +264,11 @@ export const webRoutes = [
         element: React.createElement(CancelAppointments),
       },
       {
-        path: "withdraw",
+        path: "wallet/withdraw",
         element: React.createElement(Withdraw),
       },
       {
-        path: "createPost",
+        path: "inspiration/createPost",
         element: React.createElement(CreatePost),
       },
       {
@@ -280,11 +280,11 @@ export const webRoutes = [
         element: React.createElement(EmptyWallet),
       },
       {
-        path: "transactionHistory",
+        path: "wallet/transactionHistory",
         element: React.createElement(TransactionHistory),
       },
       {
-        path: "addFunds",
+        path: "wallet/addFunds",
         element: React.createElement(AddFunds),
       },
       {

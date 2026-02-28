@@ -8,29 +8,28 @@ import InfiniteVideoScroll from "./InfiniteVideoScroll";
 import { ButtonBase, IconButton } from "@mui/material";
 import UploadInspo from "./UploadInspo";
 import addPlus from "../../assets/Images/addPlus.svg";
+import { useDynamicScreen } from "../../Utils/screenWidth";
 
 const InspoTabs = ({ value, onSelect }) => {
   const uploadRefDialog = React.useRef(null);
+  const dynamicScreen = useDynamicScreen();
   const uploadRef = React.useRef(null);
   return (
     <div>
       <UploadInspo uploadRef={uploadRef} uploadRefDialog={uploadRefDialog} />
       <Box sx={{ width: "100%", typography: "body1" }}>
-        <TabContext value={value} >
-          <div className="-blur-md overflow-hidden bg-white/30 border-b border-black/60 shadow-xl w-full">
+        <TabContext value={value}>
+          <div className=" overflow-hidden relative  w-full">
             <Box
               sx={{
                 position: "fixed",
+                top: dynamicScreen < 1024 ? 0 : 90,
                 zIndex: 100,
-                backdropFilter: "blur(12px)",
-                WebkitBackdropFilter: "blur(12px)",
-                backgroundColor: "rgba(0, 0, 0, 0.3)",
-                dropShadow: "0 10px 25px rgba(0, 0, 0, 0.2)",
                 width: "100%",
-                // minWidth: "39.5%",
-                // width: "100%",
+                maxWidth: "500px",
               }}
             >
+              <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"></div>
               <TabList
                 value={value}
                 onChange={onSelect}
@@ -111,7 +110,7 @@ const InspoTabs = ({ value, onSelect }) => {
           </div>
           <div className="overflow-hidden">
             <TabPanel sx={{ paddingInline: "0", overflow: "hidden" }} value="1">
-              <InfiniteVideoScroll  />
+              <InfiniteVideoScroll />
             </TabPanel>
             <TabPanel sx={{ paddingInline: "0" }} value="2">
               Item Two

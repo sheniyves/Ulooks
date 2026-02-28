@@ -2,16 +2,18 @@ import { DialogContent, DialogContentText } from "@mui/material";
 import React from "react";
 import arrowLeft from "../../assets/Images/notArrowLeft.svg";
 import Dialog from "../SharedComponents/AlertDialog";
+import { useDynamicScreen } from "../../Utils/screenWidth";
 
-const Notification = ({ 
-  dialogRef, 
+const Notification = ({
+  dialogRef,
   notifications,
   unreadBackground = "bg-light_Purple",
   unreadTextColor = "text-darkPurple",
   readBackground = "bg-white",
   readTextColor = "text-[#667085]",
-  timeTextColor = "text-[#98A2B3]"
+  timeTextColor = "text-[#98A2B3]",
 }) => {
+  const dynamicScreen = useDynamicScreen();
   return (
     <div>
       <Dialog
@@ -19,7 +21,7 @@ const Notification = ({
         dialogTitle={"Notification"}
         action={"Mark all as read"}
         icon={arrowLeft}
-        useFullWidth={window.innerWidth < 770}
+        useFullWidth={dynamicScreen < 770}
       >
         <DialogContent>
           <div>

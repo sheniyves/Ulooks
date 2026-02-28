@@ -5,10 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getTopService } from "../../api/services";
 import { Skeleton } from "@mui/material";
-import { topService } from "../../data/topService";
+// import { topService } from "../../data/topService";
 
 const TopServiceOfTheWeek = () => {
-  console.log({ topService });
+  // console.log({ topService });
   const x = useMotionValue(0);
   const speed = -0.5;
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ const TopServiceOfTheWeek = () => {
 
   // const today = new Date().toISOString().split("T")[0];
   const today = "2025-01-15";
-
+console.log({today})
   const { data, isPending, isSuccess, isError, error } = useQuery({
     queryKey: ["topService", today],
     queryFn: () => getTopService(today),
@@ -27,7 +27,7 @@ const TopServiceOfTheWeek = () => {
 
   useEffect(() => {
     if (isSuccess) {
-      console.log("Fetched top services:", data);
+      console.log("Fetched top services:", data?.data);
     }
   }, [isSuccess, data]);
 
@@ -47,7 +47,7 @@ const TopServiceOfTheWeek = () => {
       </h2>
 
       <div className="max-w-full xl:max-w-[75%] overflow-hidden bg-white fadeout-horizontal">
-        {true ? (
+        {isPending ? (
           <ul className="flex gap-4 p-2 ml-[324px]">
             {[1, 2, 3, 4].map((t) => (
               <li
@@ -72,12 +72,12 @@ const TopServiceOfTheWeek = () => {
             dragElastic={0.05}
             dragMomentum={true}
           >
-            {topService?.map((service, index) => (
+            {data?.data?.map?.((service, index) => (
               <li
                 // key={`${service.id}-${index}`}
                 key={service.id}
                 style={{
-                  backgroundImage: `url(${service.image})`,
+                  backgroundImage: `url(${service.image_url})`,
                   backgroundRepeat: "no-repeat",
                   backgroundSize: "cover",
                 }}

@@ -8,7 +8,7 @@ import arrowDownIcon from "../../assets/Images/arrow-down.svg";
 import Error from "./Error";
 import { Controller } from "react-hook-form";
 
-// Moved outside
+
 const CustomDropdownIcon = ({ onClick, error }) => {
   const border = error ? "border-error" : "border-color";
   const background = error ? "bg-error" : "transparent";

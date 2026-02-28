@@ -4,7 +4,7 @@ import Navbar from "../../Components/SharedComponents/Navbar";
 import ConatinerWidth from "../../Components/SharedComponents/ConatinerWidth";
 import Content from "../../Components/SharedComponents/Content";
 import Header from "../../Components/SharedComponents/Header";
-import { IconButton } from "@mui/material";
+import { IconButton, Tooltip, Zoom } from "@mui/material";
 import queueIcon from "../../assets/Images/queue.svg";
 import plusIcon from "../../assets/Images/add-square.svg";
 import PageTransition from "../../Components/SharedComponents/PageTransition";
@@ -21,7 +21,7 @@ import { Link } from "react-router-dom";
 
 const CustomerAppointments = () => {
   const [activeIndex, setActiveIndex] = React.useState(() =>
-    getFromLocalStorage("appointments", 0)
+    getFromLocalStorage("appointments", 0),
   );
   React.useEffect(() => {
     setToLocalStorage("appointments", activeIndex);
@@ -42,13 +42,28 @@ const CustomerAppointments = () => {
               <Header iconPresence={false}>Appointments</Header>
               <div className="flex items-end -mb-4  absolute   right-4 bottom-0">
                 <Link to={"/customerWebApp/queue"}>
-                  <IconButton>
-                    <img src={queueIcon} alt="Queue icon" />
-                  </IconButton>
+                  <Tooltip
+                    title="Queue"
+                    slots={{
+                      transition: Zoom,
+                    }}
+                  >
+                    <IconButton>
+                      <img src={queueIcon} alt="Queue icon" />
+                    </IconButton>
+                  </Tooltip>
                 </Link>
+                 <Tooltip
+                    title="Add appointments"
+                    slots={{
+                      transition: Zoom,
+                    }}
+                >
+                  
                 <IconButton>
                   <img src={plusIcon} alt="Plus icon" />
                 </IconButton>
+                  </Tooltip>
               </div>
             </div>
           </div>
@@ -67,7 +82,11 @@ const CustomerAppointments = () => {
                         .slice(0, 1)
                         .concat(services.slice(2))
                         .map((appointment, idx) => (
-                          <ServiceActionCards done={true} key={idx} details={appointment} />
+                          <ServiceActionCards
+                            done={true}
+                            key={idx}
+                            details={appointment}
+                          />
                         ))}
                     </History>
                   </div>
@@ -95,7 +114,11 @@ const CustomerAppointments = () => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       {activeIndex === 1 &&
                         services.map((appointment, idx) => (
-                          <ServiceActionCards done={true} key={idx} details={appointment} />
+                          <ServiceActionCards
+                            done={true}
+                            key={idx}
+                            details={appointment}
+                          />
                         ))}
                     </div>
                   </PageTransition>

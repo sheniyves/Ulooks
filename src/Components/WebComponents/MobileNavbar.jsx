@@ -75,7 +75,7 @@ const MobileNavbar = ({ navType = "customer" }) => {
                   src={nav.icon}
                   alt={`${nav.label} icon`}
                   style={
-                    isActive === nav.label
+                    isActive.includes(nav.label)
                       ? {
                           filter: IconColor,
                         }
@@ -86,7 +86,7 @@ const MobileNavbar = ({ navType = "customer" }) => {
 
               <p
                 className={`text-xs font-medium ${
-                  isActive === nav.label
+                  isActive.includes(nav.label)
                     ? navType === "customer"
                       ? "text-darkPurple"
                       : "text-[#F79009]"

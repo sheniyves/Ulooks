@@ -2,12 +2,13 @@ import React, { useCallback } from "react";
 import AlertDialog from "../SharedComponents/AlertDialog";
 import folderAddIcon from "../../assets/Images/folder-add.svg";
 import { IconButton } from "@mui/material";
+import closeCircle from "../../assets/Images/close-circle.svg";
 import { useNavigate } from "react-router-dom";
 
 const UploadInspo = ({
   uploadRefDialog,
   uploadRef,
-  nav = "/customerWebApp/createPost",
+  nav = "/customerWebApp/inspiration/createPost",
 }) => {
   const navigate = useNavigate();
 
@@ -39,8 +40,10 @@ const UploadInspo = ({
     <div>
       <AlertDialog
         ref={uploadRefDialog}
-        iconPresence={false}
         background={"#f4e2fe"}
+        iconPresence={false}
+        iconPresenceRight={true}
+        iconRight={closeCircle}
       >
         <div
           className=" h-[11.28rem] flex items-center justify-center flex-col border-2 border-dashed border-[#BE6BFB] rounded-lg cursor-pointer"

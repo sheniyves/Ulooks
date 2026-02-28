@@ -14,6 +14,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { getFromLocalStorage } from "../../Utils/presistStorage";
 import { userProfile } from "../../api/profile";
 import { useQueryFn } from "../../../hooks/queryFn";
+import { Tooltip, Zoom } from "@mui/material";
 
 const CustomerProfile = () => {
   const location = useLocation();
@@ -47,16 +48,23 @@ const CustomerProfile = () => {
                     alt="profile picture"
                     className="w-[8.75rem] h-[8.75rem] object-cover rounded-full"
                   />
-                  <img
-                    src={badge1}
-                    alt="John jake doe badge"
-                    className="max-w-[2.75rem] absolute top-0 right-0 cursor-pointer"
-                    onClick={() => {
-                      navigate("/customerWebApp/badgeExplanation", {
-                        previousUrl: location.pathname,
-                      });
+                  <Tooltip
+                    title="Starter stylist"
+                    slots={{
+                      transition: Zoom,
                     }}
-                  />
+                  >
+                    <img
+                      src={badge1}
+                      alt="John jake doe badge"
+                      className="max-w-[2.75rem] absolute top-0 right-0 cursor-pointer"
+                      onClick={() => {
+                        navigate("/customerWebApp/badgeExplanation", {
+                          previousUrl: location.pathname,
+                        });
+                      }}
+                    />
+                  </Tooltip>
                 </div>
                 <div className="text-left md:text-center">
                   <h2 className="font-fashion capitalize mt-4 mb-2 font-bold  text-[1.75rem] text-[#6A0DAD] text-center">

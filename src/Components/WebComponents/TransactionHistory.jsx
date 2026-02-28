@@ -12,7 +12,7 @@ const TransactionHistory = () => {
         <p className="text-darkPurple text-lg font-bold mb-2">
           Transaction History
         </p>
-        <Link to={"/customerWebApp/transactionHistory"}>
+        <Link to={"/customerWebApp/wallet/transactionHistory"}>
           <span className="text-blue hover:underline text-sm font-medium cursor-pointer">
             See more
           </span>

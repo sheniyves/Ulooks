@@ -26,6 +26,7 @@ import Toast from "../Toast";
 import HowUlooksWorks from "./HowUlooksWorks";
 import InviteAndEarn from "./InviteAndEarn";
 import { getReferralCode } from "../../api/personalization";
+import NotificationDrawer from "./NotificationDrawer";
 
 const SettingsCard = () => {
   const { email } = getFromLocalStorage("customerData", "User");
@@ -40,6 +41,7 @@ const SettingsCard = () => {
   const deleteAccountRef = React.useRef(null);
   const howUlooksWorksRef = React.useRef(null);
   const inviteNdEarnRef = React.useRef(null);
+  const notificationRef = React.useRef(null);
   const { showToast, toastMessage, toastRef } = useToast();
 
   const {
@@ -64,7 +66,6 @@ const SettingsCard = () => {
         break;
       case "security":
         resendOtp({ email });
-
         break;
       case "support":
         supportDrawerRef.current?.openDrawer();
@@ -81,6 +82,9 @@ const SettingsCard = () => {
       case "terms":
         termsDrawerRef.current?.openDrawer();
         break;
+      case "notification":
+        notificationRef.current?.openDrawer();
+        break;
       default:
         break;
     }
@@ -93,8 +97,8 @@ const SettingsCard = () => {
   const { data: referralData, isPending: isReferralPending } = useQueryFn({
     key: ["referralStats"],
     fun: getReferralCode,
+    // enabled: !!inviteNdEarnRef.current
   });
-  // console.log({ data, isPending });
 
   const handleLogout = () => {
     localStorage.removeItem("customerToken");
@@ -173,8 +177,13 @@ const SettingsCard = () => {
       <Drawer ref={termsDrawerRef}>
         <TermsAndCondition drawerRef={termsDrawerRef} />
       </Drawer>
+       <Drawer ref={notificationRef}>
+        <NotificationDrawer  drawerRef={notificationRef} />
+      </Drawer>
       <Dialog iconPresence={false} ref={logOutRef} dialogTitle="Logout?">
-        <p className="text-center mb-4">Are you sure you want to logout?</p>
+        <p className="text-center mb-4">
+          Are you sure you want to logout? We're expecting you back!
+        </p>
         <div className=" flex gap-4 flex-col sm:flex-row items-center justify-between">
           <Button
             backgroundColor="#E6D6F5"
@@ -205,10 +214,17 @@ const SettingsCard = () => {
           </dispatchEvent>
         </div>
       </Dialog>
-      <div className="  h-[3rem] text-left px-8 md:px-4 flex items-center   mt-4  font-medium rounded-md text-xl text-[#D92D20] hover:bg-[#fef3f2] hover:text-[#B42318] transition-colors duration-200 ">
+      <div className="   h-[3rem] text-left px-8 md:px-4       mt-4  font-medium rounded-md text-xl text-[#D92D20] hover:bg-[#fef3f2] hover:text-[#B42318] transition-colors duration-200 ">
         <ButtonBase
           onClick={() => logOutRef.current?.openDialog()}
-          // sx={{ width: "100%", height: "100%", borderRadius: "8px", }}
+          sx={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "start",
+          }}
         >
           Log out
         </ButtonBase>
@@ -248,18 +264,25 @@ const SettingsCard = () => {
                 {isDeleting ? (
                   <CircularProgress color="inherit" size={12} />
                 ) : (
-                  <DeleteOutlineIcon
-                    color="inherit"
-                    sx={{ fontSize: "1rem" }}
-                  />
+                  <DeleteOutlineIcon color="inherit" />
                 )}
               </Button>
             </dispatchEvent>
           </div>
         </div>
       </Dialog>
-      <div className="  h-[3rem] text-left px-8 md:px-4 flex items-center   mt-4  font-medium rounded-md text-xl text-[#D92D20] hover:bg-[#fef3f2] hover:text-[#B42318] transition-colors duration-200 ">
-        <ButtonBase onClick={() => deleteAccountRef.current?.openDialog()}>
+      <div className="  h-[3rem] text-left px-8 md:px-4     mt-4  font-medium rounded-md text-xl text-[#D92D20] hover:bg-[#fef3f2] hover:text-[#B42318] transition-colors duration-200 ">
+        <ButtonBase
+          onClick={() => deleteAccountRef.current?.openDialog()}
+          sx={{
+            width: "100%",
+            height: "100%",
+            borderRadius: "8px",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "start",
+          }}
+        >
           Delete Account
         </ButtonBase>
       </div>
@@ -339,8 +362,8 @@ const SettingsRow = ({
 };
 
 const actions = [
-  { label: "Notifications", icon: "" },
   { label: "Lite mode", icon: "" },
+  { label: "Notifications", icon: arrowRight, type: "notification" },
   { label: "Account", icon: arrowRight, type: "account" },
   { label: "Security", icon: arrowRight, type: "security" },
   { label: "Invite & Earn", icon: arrowRight, type: "inviteNdEarn" },

@@ -60,6 +60,7 @@ const MusicSelector = ({ musicSelectorRef, onSelect }) => {
       icon={arrowLeft}
       dialogTitle="Add Music"
       useFullWidth={window.innerWidth < 700}
+      maxHeight="100vh"
     >
       <form
         onSubmit={handleSubmit(onSubmit)}
@@ -72,7 +73,7 @@ const MusicSelector = ({ musicSelectorRef, onSelect }) => {
           error={errors.search?.message}
         />
         <div
-          className={` relative text-center ${fetchedMusic?.data?.length > 0 ? "py-6" : "py-20"}  my-6 px-2 text-gray text-sm bg-gray  border border-slate rounded-lg`}
+          className={` relative text-center ${fetchedMusic?.data?.length > 0 ? "py-6" : "py-20"}  my-6 px-4 text-gray text-sm bg-gray  border border-slate rounded-lg`}
         >
           {isLoading ? (
             <div className="flex flex-col gap-2 items-center justify-center">

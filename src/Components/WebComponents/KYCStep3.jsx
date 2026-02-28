@@ -38,7 +38,7 @@ const KYCStep3 = ({ setExample, useBaseColor = true }) => {
   const PhoneInputField = useBaseColor ? PhoneNumberInput : PhoneNumberInput2;
 
   return (
-    <div className=" min-w-none md:min-w-[530px] mt-16">
+    <div className=" min-w-none md:min-w-[530px]  ">
       <h2 className={`font-fashion text-2xl ${color} `}>
         📞 Emergency Contact
       </h2>

@@ -14,7 +14,7 @@ const WarningToStartKYC = () => {
   return (
     <PageTransition>
       <ConatinerWidth>
-        <div className="bg-light_Purple w-full px-4 py-8 ">
+        <div className="bg-light_Purple w-full px-4 py-8 min-h-screen ">
           <StartKYCDialog dialogRef={dialogRefKYC} />
           {/* <ContainerHeight> */}
             <div className="w-full   mx-auto max-w-[38.5rem]">
