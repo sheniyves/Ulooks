@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+ import React, { useState, useRef, useEffect } from "react";
 import { IconButton, Avatar, Button } from "@mui/material";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import FavoriteIcon from "@mui/icons-material/Favorite";
@@ -10,13 +10,15 @@ import MusicNoteIcon from "@mui/icons-material/MusicNote";
 import AddIcon from "@mui/icons-material/Add";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
 import { useMutationFn } from "../../../hooks/queryFn";
 import { likePost } from "../../api/inspo";
+import { useDynamicScreen } from "../../Utils/screenWidth";
 
 const PostCard = ({ item, isActive, onNavigate }) => {
-  console.log({ item });
+  const dynamicScreen = useDynamicScreen();
 
-  // Use the media array from the API response
   const mediaList = item?.media || [];
   const [index, setIndex] = useState(0);
   const [liked, setLiked] = useState(false);
@@ -24,10 +26,17 @@ const PostCard = ({ item, isActive, onNavigate }) => {
   const [following, setFollowing] = useState(
     item?.author?.is_following || false,
   );
-  const [touchStart, setTouchStart] = useState(null);
-  const [touchEnd, setTouchEnd] = useState(null);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const [showPlayPause, setShowPlayPause] = useState(false);
 
-  const videoRef = useRef(null);
+  // Drag state
+  const [dragStartX, setDragStartX] = useState(null);
+  const [dragOffsetX, setDragOffsetX] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
+  const videoRefs = useRef({});
+  const hasMultiple = mediaList.length > 1;
+  const showPausePlayIconTimeout = useRef(null);
 
   const {
     mutate: like,
@@ -41,133 +50,190 @@ const PostCard = ({ item, isActive, onNavigate }) => {
   if (mediaList.length === 0) return null;
 
   const currentMedia = mediaList[index];
+  const currentIsVideo = currentMedia?.type === "video";
 
-  // Extract hashtags from caption
   const hashtags = item?.tags || [];
   const caption = item?.caption || "";
 
-  // Minimum swipe distance (in px)
   const minSwipeDistance = 50;
 
-  // Handle video play/pause based on visibility
   useEffect(() => {
-    if (videoRef.current) {
-      if (isActive) {
-        videoRef.current.play().catch((err) => {
+    // Pause and mute ALL videos in this card first
+    Object.values(videoRefs.current).forEach((vid) => {
+      if (vid) {
+        vid.pause();
+        vid.muted = true;
+      }
+    });
+
+    // Then only play + unmute the current active video (without resetting time)
+    const activeVid = videoRefs.current[index];
+    if (activeVid && isActive) {
+      activeVid.muted = false;
+      if (isPlaying) {
+        activeVid.play().catch((err) => {
           console.log("Video play failed:", err);
         });
-      } else {
-        videoRef.current.pause();
-        videoRef.current.currentTime = 0; // Reset video to start
       }
+    }
+  }, [isActive, index]);
+
+  // Sync play/pause state when isActive changes
+  useEffect(() => {
+    const activeVid = videoRefs.current[index];
+    if (!activeVid) return;
+    if (!isActive) {
+      activeVid.pause();
+      activeVid.muted = true;
     }
   }, [isActive]);
 
-  // Handle touch events for swiping between media
-  const onTouchStart = (e) => {
-    setTouchEnd(null);
-    setTouchStart(e.targetTouches[0].clientX);
+  const handleTogglePlay = () => {
+    const activeVid = videoRefs.current[index];
+    if (!activeVid) return;
+
+    if (isPlaying) {
+      activeVid.pause();
+      setIsPlaying(false);
+    } else {
+      activeVid.muted = false;
+      activeVid.play().catch((err) => console.log("Play failed:", err));
+      setIsPlaying(true);
+    }
+
+    // Show the icon briefly then hide
+    setShowPlayPause(true);
+    clearTimeout(showPausePlayIconTimeout.current);
+    showPausePlayIconTimeout.current = setTimeout(() => {
+      setShowPlayPause(false);
+    }, 800);
   };
 
-  const onTouchMove = (e) => {
-    setTouchEnd(e.targetTouches[0].clientX);
+  // ── Drag handlers (mouse + touch) — only used when hasMultiple ──
+  const handleDragStart = (clientX) => {
+    setDragStartX(clientX);
+    setDragOffsetX(0);
+    setIsDragging(true);
   };
 
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return;
+  const handleDragMove = (clientX) => {
+    if (!isDragging || dragStartX === null) return;
+    setDragOffsetX(clientX - dragStartX);
+  };
 
-    const distance = touchStart - touchEnd;
-    const isLeftSwipe = distance > minSwipeDistance;
-    const isRightSwipe = distance < -minSwipeDistance;
-
-    if (isLeftSwipe && index < mediaList.length - 1) {
+  const handleDragEnd = () => {
+    if (!isDragging) return;
+    if (dragOffsetX < -minSwipeDistance && index < mediaList.length - 1) {
       setIndex(index + 1);
     }
-    if (isRightSwipe && index > 0) {
+    if (dragOffsetX > minSwipeDistance && index > 0) {
       setIndex(index - 1);
     }
+    setDragStartX(null);
+    setDragOffsetX(0);
+    setIsDragging(false);
   };
+
+  const onMouseDown = (e) => handleDragStart(e.clientX);
+  const onMouseMove = (e) => { if (isDragging) handleDragMove(e.clientX); };
+  const onMouseUp = () => handleDragEnd();
+  const onMouseLeave = () => { if (isDragging) handleDragEnd(); };
+
+  const onTouchStart = (e) => handleDragStart(e.targetTouches[0].clientX);
+  const onTouchMove = (e) => handleDragMove(e.targetTouches[0].clientX);
+  const onTouchEnd = () => handleDragEnd();
+  // ───────────────────────────────────────────────────────────────
 
   return (
     <>
-      <div className="relative w-full h-[calc(100vh-5rem)] snap-start snap-always">
+      <div className="relative  w-full h-screen snap-start snap-always">
         {/* MEDIA */}
         <div
-          onTouchStart={onTouchStart}
-          onTouchMove={onTouchMove}
-          onTouchEnd={onTouchEnd}
+          {...(hasMultiple && {
+            onMouseDown,
+            onMouseMove,
+            onMouseUp,
+            onMouseLeave,
+            onTouchStart,
+            onTouchMove,
+            onTouchEnd,
+          })}
           className="relative w-full h-full"
+          style={{
+            cursor: hasMultiple ? (isDragging ? "grabbing" : "grab") : "default",
+            userSelect: hasMultiple ? "none" : "auto",
+          }}
         >
-          {currentMedia.type === "video" ? (
-            <video
-              ref={videoRef}
-              src={currentMedia.url}
-              className="w-full h-full object-cover"
-              loop
-              //   muted
-              playsInline
-            />
-          ) : (
-            <img
-              src={currentMedia.url}
-              className="w-full h-full object-cover"
-              alt=""
-            />
-          )}
+          {/* Draggable media strip */}
+          <div
+            style={{
+              display: "flex",
+              width: `${mediaList.length * 100}%`,
+              height: "100%",
+              transform: `translateX(calc(-${index * (100 / mediaList.length)}% + ${hasMultiple ? dragOffsetX / mediaList.length : 0}px))`,
+              transition: isDragging ? "none" : "transform 0.3s ease",
+            }}
+          >
+            {mediaList.map((media, i) => (
+              <div
+                key={i}
+                style={{
+                  width: `${100 / mediaList.length}%`,
+                  flexShrink: 0,
+                  height: "100%",
+                }}
+              >
+                {media.type === "video" ? (
+                  <video
+                    ref={(el) => {
+                      if (el) videoRefs.current[i] = el;
+                    }}
+                    src={media.url}
+                    className="w-full h-full object-cover"
+                    loop
+                    playsInline
+                    draggable={false}
+                  />
+                ) : (
+                  <img
+                    src={media.url}
+                    className="w-full h-full object-cover"
+                    alt=""
+                    draggable={false}
+                  />
+                )}
+              </div>
+            ))}
+          </div>
 
           {/* Bottom gradient shadow for better text visibility */}
           <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-to-t from-black/80 via-black/30 to-transparent pointer-events-none z-10" />
         </div>
 
+        {/* PLAY / PAUSE BUTTON — center, only for videos */}
+        {currentIsVideo && (
+          <button
+            onClick={handleTogglePlay}
+            className="absolute inset-0 w-full h-full z-20 flex items-center justify-center bg-transparent"
+            style={{ cursor: "pointer" }}
+          >
+            <div
+              className={`transition-all duration-300 rounded-full bg-black/40 p-4 ${
+                showPlayPause ? "opacity-100 scale-100" : "opacity-0 scale-75"
+              }`}
+            >
+              {isPlaying ? (
+                <PauseIcon sx={{ fontSize: 48, color: "white" }} />
+              ) : (
+                <PlayArrowIcon sx={{ fontSize: 48, color: "white" }} />
+              )}
+            </div>
+          </button>
+        )}
+
         {/* Multiple media indicators with swipe buttons */}
         {mediaList.length > 1 && (
           <>
-            {/* Left arrow - Previous */}
-            {index > 0 && (
-              <button
-                onClick={() => setIndex(index - 1)}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 z-20 bg-black/40 hover:bg-black/60 rounded-full p-2 transition-all"
-                aria-label="Previous image"
-              >
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 19l-7-7 7-7"
-                  />
-                </svg>
-              </button>
-            )}
-
-            {/* Right arrow - Next */}
-            {index < mediaList.length - 1 && (
-              <button
-                onClick={() => setIndex(index + 1)}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 z-20 bg-black/40 hover:bg-black/60 rounded-full p-2 transition-all"
-                aria-label="Next image"
-              >
-                <svg
-                  className="w-6 h-6 text-white"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 5l7 7-7 7"
-                  />
-                </svg>
-              </button>
-            )}
-
             {/* Progress bars at top - like Instagram Stories */}
             <div className="absolute top-2 left-0 right-0 flex gap-1 px-2 z-20">
               {mediaList.map((_, i) => (
@@ -201,7 +267,9 @@ const PostCard = ({ item, isActive, onNavigate }) => {
         )}
 
         {/* USER INFO - Bottom Left */}
-        <div className="absolute left-3 bottom-6 z-30 max-w-[70%]">
+        <div
+          className={`absolute left-3  z-30 max-w-[70%] ${dynamicScreen < 1024 ? " bottom-20" : "bottom-6"}`}
+        >
           {/* Profile and Follow Button */}
           <div className="flex items-center gap-3 mb-3">
             <div className="relative">
@@ -236,7 +304,7 @@ const PostCard = ({ item, isActive, onNavigate }) => {
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-white font-semibold text-sm drop-shadow-lg">
+              <span className="text-white font-urbanist font-semibold text-sm drop-shadow-lg">
                 {item?.author?.name}
               </span>
               {!following && (
@@ -251,6 +319,7 @@ const PostCard = ({ item, isActive, onNavigate }) => {
                     minWidth: "auto",
                     border: "1px solid white",
                     borderRadius: "4px",
+                    fontFamily: "urbanist",
                     "&:hover": {
                       backgroundColor: "rgba(255, 255, 255, 0.2)",
                     },
@@ -264,7 +333,7 @@ const PostCard = ({ item, isActive, onNavigate }) => {
 
           {/* Caption */}
           {caption && (
-            <p className="text-white text-sm mb-2 drop-shadow-lg line-clamp-2">
+            <p className="text-white max-w-[30ch] text-sm mb-2 drop-shadow-lg line-clamp-2 font-urbanist">
               {caption}
             </p>
           )}
@@ -295,7 +364,7 @@ const PostCard = ({ item, isActive, onNavigate }) => {
         </div>
 
         {/* ACTION BUTTONS - Right Side */}
-        <div className="absolute right-3 bottom-20 flex flex-col items-center gap-4 z-30">
+        <div className="absolute right-3 bottom-[8.5rem]  flex flex-col items-center gap-4 z-30">
           {/* Like Button */}
           <div className="flex flex-col items-center">
             <IconButton
@@ -373,11 +442,10 @@ const PostCard = ({ item, isActive, onNavigate }) => {
             <MoreVertIcon sx={{ fontSize: 28 }} />
           </IconButton>
         </div>
+        {/* NAVIGATION BUTTONS - Desktop */}
       </div>
-
-      {/* NAVIGATION BUTTONS - Desktop */}
       {isActive && (
-        <div className="hidden md:flex absolute flex-col bottom-8 -right-16 z-40 gap-2">
+        <div className="hidden md:flex absolute flex-col bottom-8  right-3 z-[400] gap-2">
           <IconButton
             onClick={() => onNavigate("up")}
             sx={{

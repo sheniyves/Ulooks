@@ -120,10 +120,12 @@ const InfiniteVideoScroll = ({ uploadRefDialog }) => {
         <p className="font-urbanist text-lg">No posts found.</p>
       </div>
     );
+  console.log({ activeIndex, posts });
+  
   return (
     <div
       ref={containerRef}
-      className="h-[calc(100vh-4rem)] overflow-y-scroll snap-y snap-mandatory scroll-smooth"
+      className="h-screen overflow-y-scroll snap-y snap-mandatory scroll-smooth"
       style={{
         scrollbarWidth: "none",
         msOverflowStyle: "none",
@@ -135,14 +137,16 @@ const InfiniteVideoScroll = ({ uploadRefDialog }) => {
         }
       `}</style>
 
-      {posts.map((item, idx) => (
-        <PostCard
+      {posts.map((item, idx) => {
+        console.log( {idx})
+        return <PostCard
           key={item.id}
           item={item}
           isActive={idx === activeIndex}
           onNavigate={handleNavigate}
         />
-      ))}
+      }
+       )}
 
       <div
         ref={loadMoreRef}
@@ -150,7 +154,7 @@ const InfiniteVideoScroll = ({ uploadRefDialog }) => {
       />
 
       {isFetchingNextPage && (
-        <div className="h-[calc(100vh-4rem)] snap-start flex items-center justify-center ">
+        <div className="h-[calc(100vh-2rem)] snap-start flex items-center justify-center ">
           <div
             className="text-center  bg-purple/20 flex items-center flex-col justify-center h-full min-h-screen"
             style={{

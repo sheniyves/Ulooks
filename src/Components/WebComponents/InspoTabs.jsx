@@ -19,7 +19,7 @@ const InspoTabs = ({ value, onSelect }) => {
       <UploadInspo uploadRef={uploadRef} uploadRefDialog={uploadRefDialog} />
       <Box sx={{ width: "100%", typography: "body1" }}>
         <TabContext value={value}>
-          <div className=" overflow-hidden relative  w-full">
+          <div className="  relative  w-full">
             <Box
               sx={{
                 position: "fixed",
@@ -29,7 +29,7 @@ const InspoTabs = ({ value, onSelect }) => {
                 maxWidth: "500px",
               }}
             >
-              <div className="absolute inset-0 bg-gradient-to-b from-black/50 to-transparent"></div>
+              <div className="absolute inset-0  bg-gradient-to-b from-black/70 to-transparent"/> 
               <TabList
                 value={value}
                 onChange={onSelect}
@@ -108,8 +108,8 @@ const InspoTabs = ({ value, onSelect }) => {
               </TabList>
             </Box>
           </div>
-          <div className="overflow-hidden">
-            <TabPanel sx={{ paddingInline: "0", overflow: "hidden" }} value="1">
+          <div className="h-full">
+            <TabPanel sx={{ padding: "0", height: "100%" }} value="1">
               <InfiniteVideoScroll />
             </TabPanel>
             <TabPanel sx={{ paddingInline: "0" }} value="2">

@@ -22,6 +22,7 @@ const Notification = ({
         action={"Mark all as read"}
         icon={arrowLeft}
         useFullWidth={dynamicScreen < 770}
+        maxHeight="100vh"
       >
         <DialogContent>
           <div>

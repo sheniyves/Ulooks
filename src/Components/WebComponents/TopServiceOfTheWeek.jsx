@@ -23,6 +23,16 @@ console.log({today})
   const { data, isPending, isSuccess, isError, error } = useQuery({
     queryKey: ["topService", today],
     queryFn: () => getTopService(today),
+    onSuccess: (data) => {
+      console.log("Fetched top services:", data?.data);
+    },
+    onError: (error) => {
+      const status = error?.response?.statusCode;
+      console.log({ error })
+      if (status === 403) {
+        navigate("/customerAuth/customer_signIn");
+      }
+    }
   });
 
   useEffect(() => {
@@ -47,7 +57,7 @@ console.log({today})
       </h2>
 
       <div className="max-w-full xl:max-w-[75%] overflow-hidden bg-white fadeout-horizontal">
-        {isPending ? (
+        {true ? (
           <ul className="flex gap-4 p-2 ml-[324px]">
             {[1, 2, 3, 4].map((t) => (
               <li
@@ -56,7 +66,7 @@ console.log({today})
               >
                 <Skeleton
                   variant="rectangular"
-                  width="100%"
+                  width={152}
                   height={152}
                   className="rounded-xl"
                 />
