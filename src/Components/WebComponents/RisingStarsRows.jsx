@@ -1,7 +1,7 @@
 import React from "react";
 import { handleFormatting } from "../../Utils/formattingFunction";
 import stars from "../../assets/Images/starGold.svg";
-import defaultImage from "../../assets/Images/image background.png";
+import defaultImage from "../../assets/Images/image_background.png";
 
 const RisingStarsRows = ({ data }) => {
   return (

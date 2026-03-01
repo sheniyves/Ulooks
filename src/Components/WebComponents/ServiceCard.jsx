@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Skeleton } from "@mui/material";
-import defaultImage from "../../assets/Images/image background.png";
+import defaultImage from "../../assets/Images/image_background.png";
 
 const ServiceCard = ({ service, isPending, isError }) => {
   if (isPending) {
