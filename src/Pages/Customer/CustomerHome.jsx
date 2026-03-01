@@ -16,31 +16,39 @@ import searchIcon from "../../assets/Images/search-normal.svg";
 import locationIcon from "../../assets/Images/locationIcon.svg";
 import Notification from "../../Components/WebComponents/Notification";
 import { useForm } from "react-hook-form";
-import { recentlyUsedServices } from "../../data/recentlyUsedServices";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../../Components/SharedComponents/PageTransition";
 import { notifications } from "../../data/notification";
 import MobileLocation from "../../Components/SharedComponents/MobileLocation";
 import { getFromLocalStorage } from "../../Utils/presistStorage";
+import { useQueryFn } from "../../../hooks/queryFn";
+import { getRisingStars } from "../../api/services";
 const CustomerHome = () => {
-     const {name} = getFromLocalStorage("customerData", "User")
+  const navigate = useNavigate();
+  const { name } = getFromLocalStorage("customerData", "User");
   const [selectedService, setSelectedService] = React.useState(null);
   const { inputRef, setDebounceValue } = useSearchCtx();
   const {
     register,
     formState: { errors },
   } = useForm();
-
   const dialogRef = React.useRef(null);
   const dragRef = React.useRef(null);
+  const inviteNdEarnRef = React.useRef(null);
+  const limit = 10;
+  const { data, isPending, isError } = useQueryFn({
+    key: ["rising_stars", limit],
+    fun: () => getRisingStars(limit),
+  });
 
-  // React.useEffect(() => {
-  //   if (location.state?.openKYCDialog) {
-  //     dialogRefKYC.current?.openDialog();
-  //     navigate(location.pathname, { replace: true });
-  //   }
-  // }, [location.state]);
-
+  const howUlooksWorks = () => {
+    navigate("/customerWebApp/profile", {
+      state: { openInviteDrawer: true },
+    });
+    setTimeout(() => {
+      inviteNdEarnRef.current?.openDrawer();
+    }, 500);
+  };
   return (
     <div className="pb-[8rem] relative  ">
       <ConatinerWidth>
@@ -48,7 +56,7 @@ const CustomerHome = () => {
         <Navbar />
         <Notification dialogRef={dialogRef} notifications={notifications} />
         <div className=" mt-4 lg:mt-[8.5rem]" />
-        <Header action={dialogRef} icon={notification}>
+        <Header action={dialogRef} icon={notification} iconPresence={false}>
           Welcome back {name?.split(" ")[0]}
         </Header>
         <TopServiceOfTheWeek />
@@ -72,14 +80,27 @@ const CustomerHome = () => {
               register={register}
             />
             <ServiceCategories />
-            <Link to={"/customerAuth/getStarted_SignIn"}>
+            <div className="flex items-center justify-between ">
               <h2 className="text-darkerPurple font-fashion font-bold text-2xl mt-4">
-                Recently Used Services
+                Rising Stars
               </h2>
-            </Link>
-            <ul className="grid grid-cols-1 md:grid-cols-[repeat(auto-fit,_minmax(342px,_1fr))] gap-4 mt-4">
-              {recentlyUsedServices.slice(0, 3).map((service) => (
-                <ServiceCard key={service.id} service={service} />
+              <Link to={"/customerWebApp/home/risingStars"}>
+                <p className="text-xs hover:underline cursor-pointer text-blue">
+                  See more
+                </p>
+              </Link>
+            </div>
+            <ul
+              className=" flex cursor-grab items-center overflow-x-scroll gap-4 mt-4 "
+              style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
+            >
+              {data?.data?.map((service) => (
+                <ServiceCard
+                  key={service.id}
+                  service={service}
+                  isPending={isPending}
+                  isError={isError}
+                />
               ))}
             </ul>
             {selectedService && (
@@ -88,12 +109,16 @@ const CustomerHome = () => {
                 selectedService={selectedService}
               />
             )}
-        {/* <AlertDialogSlide/> */}
 
-            <CompletedService
+            <p className="text-sm cursor-pointer underline text-center text-purple mt-12" onClick={howUlooksWorks}>
+              How Ulooks works
+            </p>
+            {/* <AlertDialogSlide/> */}
+
+            {/* <CompletedService
               selectedService={selectedService}
               selected={setSelectedService}
-            />
+            /> */}
           </Content>
         </PageTransition>
       </ConatinerWidth>

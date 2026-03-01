@@ -15,6 +15,7 @@ import { getFromLocalStorage } from "../../Utils/presistStorage";
 import { userProfile } from "../../api/profile";
 import { useQueryFn } from "../../../hooks/queryFn";
 import { Tooltip, Zoom } from "@mui/material";
+import { getBadgeType } from "../../Utils/formattingFunction";
 
 const CustomerProfile = () => {
   const location = useLocation();
@@ -49,14 +50,14 @@ const CustomerProfile = () => {
                     className="w-[8.75rem] h-[8.75rem] object-cover rounded-full"
                   />
                   <Tooltip
-                    title="Starter stylist"
+                    title={data?.badge}
                     slots={{
                       transition: Zoom,
                     }}
                   >
                     <img
-                      src={badge1}
-                      alt="John jake doe badge"
+                      src={getBadgeType(data?.badge)}
+                      alt={`${data?.name}badge`}
                       className="max-w-[2.75rem] absolute top-0 right-0 cursor-pointer"
                       onClick={() => {
                         navigate("/customerWebApp/badgeExplanation", {

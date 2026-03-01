@@ -1,37 +1,59 @@
 import React from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
-import rating from "../../assets/Images/starGold.svg";
 import { Link } from "react-router-dom";
+import { Skeleton } from "@mui/material";
+import defaultImage from "../../assets/Images/image background.png";
 
-const ServiceCard = ({ service }) => {
-  const scrollRef = React.useRef(null);
-  const { scrollX } = useScroll({ target: scrollRef });
-  const scroll = useTransform(scrollX, [0, 1], [0, 1]);
-
-  return (
-    <div style={{ transformBox: scroll }} ref={scrollRef}>
-      <li className="flex items-start gap-2 max-w-[500px]">
-        <Link to={`/customerWebApp/appointments/${service.id}`}>
-          <img
-            className="cursor-pointer"
-            src={service.image}
-            alt={`${service.image} brand logo`}
+const ServiceCard = ({ service, isPending, isError }) => {
+  if (isPending) {
+    return (
+      <li className="flex-shrink-0">
+        <div className="flex flex-col items-center justify-center gap-2">
+          <Skeleton variant="circular" width={80} height={80} />
+          <Skeleton variant="text" width={70} height={16} />
+          <Skeleton
+            variant="text"
+            width={50}
+            height={14}
+            sx={{ marginTop: "-.5rem" }}
           />
-        </Link>
-        <div className="w-full">
-          <h2 className=" text-2xl font-fashion font-bold text-darkerPurple">
-            {service.name}
-          </h2>
-          <p className="text-purple">{service.location}</p>
-          <div className="flex items-center justify-between mt-5">
-            <p className="text-gray">{service.distance}</p>
-            <span className="flex items-center gap-2">
-              <img src={rating} alt="rating icon" /> {service.rating}
-            </span>
-          </div>
         </div>
       </li>
-    </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <li className="flex-shrink-0">
+        <div className="flex flex-col items-center justify-center gap-2">
+          <div className="rounded-full w-20 h-20 bg-gray/20 flex items-center justify-center">
+            <span className="text-gray/50 text-xs text-center">!</span>
+          </div>
+          <p className="font-urbanist text-nowrap text-xs font-bold text-red-400">
+            Failed
+          </p>
+        </div>
+      </li>
+    );
+  }
+
+  return (
+    <li className="flex-shrink-0 cursor-grab">
+      <div className="flex flex-col items-center justify-center gap-2">
+        <Link to={`/customerWebApp/appointments/${service.id}`}>
+          <img
+            className="cursor-pointer object-cover object-center flex-shrink-0 rounded-full w-20 h-20"
+            src={service?.image_url ?? defaultImage}
+            alt={`${service.category} brand logo`}
+          />
+        </Link>
+        <p className="font-urbanist text-center text-nowrap text-xs font-bold text-darkerPurple -mb-2">
+          {service?.provider_name}
+        </p>
+        <p className="font-urbanist text-nowrap text-xs font-semibold text-gray/80">
+          {service?.orders_count} orders
+        </p>
+      </div>
+    </li>
   );
 };
 

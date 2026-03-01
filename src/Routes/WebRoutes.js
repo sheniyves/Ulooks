@@ -85,6 +85,8 @@ import SPLoginSuccessful from "../Pages/Auth/ServiceProviderAuth/SPLoginSuccessf
 import SPconfirmPassword from "../Pages/Auth/ServiceProviderAuth/SPconfirmPassword.jsx";
 import CreateService from "../Pages/Auth/ServiceProviderAuth/CreateService.jsx";
 import CreatedServiceExamples from "../Pages/Auth/ServiceProviderAuth/CreatedServiceExamples.jsx";
+import RisingStars from "../Pages/Customer/RisingStars.jsx";
+import ReferralHistory from "../Pages/Customer/ReferralHistory.jsx";
 
 export const webRoutes = [
   {
@@ -213,6 +215,10 @@ export const webRoutes = [
         path: "home",
         element: React.createElement(CustomerHome),
       },
+       {
+        path: "home/risingStars",
+        element: React.createElement(RisingStars),
+      },
       {
         path: "no_appointments",
         element: React.createElement(NoAppointments),
@@ -331,6 +337,10 @@ export const webRoutes = [
       {
         path: "profile",
         element: React.createElement(CustomerProfile),
+      },
+          {
+        path: "profile/referralHistory",
+        element: React.createElement(ReferralHistory),
       },
     ],
   },

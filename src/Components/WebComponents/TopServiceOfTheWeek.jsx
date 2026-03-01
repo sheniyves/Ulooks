@@ -57,7 +57,7 @@ console.log({today})
       </h2>
 
       <div className="max-w-full xl:max-w-[75%] overflow-hidden bg-white fadeout-horizontal">
-        {true ? (
+        {isPending ? (
           <ul className="flex gap-4 p-2 ml-[324px]">
             {[1, 2, 3, 4].map((t) => (
               <li

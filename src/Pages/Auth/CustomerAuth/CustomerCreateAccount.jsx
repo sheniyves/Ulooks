@@ -55,23 +55,32 @@ const CustomerCreateAccount = () => {
     mutationFn: (data) => createUserAccount(data),
     onMutate: () => setStatus("loading"),
     onSuccess: (data) => {
-      console.log("create account Success data", data);
-      if (data.data.statusCode !== 400) {
-        showToast(data.message || "Account Created");
-      }
+  console.log("create account Success data", data);
+  
+  const responseData = data?.data?.data;
+  const statusCode = data?.data?.statusCode;
 
-      setToLocalStorage("userData", {
-        userId: data.data.data.id,
-        email: data.data.data.email,
-      });
+  if (statusCode === 400 || !responseData) {
+    showToast(data?.data?.message || "Account could not be created");
+    setStatus("error");
+    return;
+  }
 
-      setStatus("success");
+  // Only store and navigate if we actually have user data
+  setToLocalStorage("userData", {
+    userId: responseData.id,
+    email: responseData.email,
+  });
 
-      setTimeout(() => {
-        navigate("/customerAuth/account_created_successfully");
-      }, 4000);
-    },
-    onError: () => {
+  showToast(data?.data?.message || "Account Created");
+  setStatus("success");
+
+  setTimeout(() => {
+    navigate("/customerAuth/account_created_successfully");
+  }, 4000);
+},
+    onError: (error) => {
+      console.log({error})
       setStatus("error");
       showToast("Error occurred");
     },

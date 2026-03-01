@@ -20,7 +20,7 @@ const Header = ({ children, icon, action, iconPresence = true, ...props }) => {
         >
           {children}
         </h1>
-        <div className="block lg:hidden">
+        <div className=" hidden">
           {iconPresence && (
             <IconButton onClick={() => action.current?.openDialog()}>
               <img src={icon} alt="Header icon" />

@@ -19,7 +19,7 @@ import { userDeleteAccount, userProfile } from "../../api/profile";
 import { useMutationFn, useQueryFn } from "../../../hooks/queryFn";
 import LogoutIcon from "@mui/icons-material/Logout";
 import Dialog from "../SharedComponents/AlertDialog";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
 import { useToast } from "../../../hooks/useToast";
 import Toast from "../Toast";
@@ -29,6 +29,7 @@ import { getReferralCode } from "../../api/personalization";
 import NotificationDrawer from "./NotificationDrawer";
 
 const SettingsCard = () => {
+  const location = useLocation();
   const { email } = getFromLocalStorage("customerData", "User");
   const navigate = useNavigate();
   const [logout, setLogout] = useState(false);
@@ -43,6 +44,14 @@ const SettingsCard = () => {
   const inviteNdEarnRef = React.useRef(null);
   const notificationRef = React.useRef(null);
   const { showToast, toastMessage, toastRef } = useToast();
+
+  useEffect(() => {
+    if (location.state?.openInviteDrawer) {
+      setTimeout(() => {
+        inviteNdEarnRef.current?.openDrawer();
+      }, 300);
+    }
+  }, [location.state]);
 
   const {
     mutate: resendOtp,
@@ -177,8 +186,8 @@ const SettingsCard = () => {
       <Drawer ref={termsDrawerRef}>
         <TermsAndCondition drawerRef={termsDrawerRef} />
       </Drawer>
-       <Drawer ref={notificationRef}>
-        <NotificationDrawer  drawerRef={notificationRef} />
+      <Drawer ref={notificationRef}>
+        <NotificationDrawer drawerRef={notificationRef} />
       </Drawer>
       <Dialog iconPresence={false} ref={logOutRef} dialogTitle="Logout?">
         <p className="text-center mb-4">

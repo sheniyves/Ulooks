@@ -9,10 +9,10 @@ import CheckIcon from "@mui/icons-material/Check";
 import dollarIcon from "../../assets/Images/dollarSign.png";
 import group from "../../assets/Images/group.png";
 import { handleFormatting } from "../../Utils/formattingFunction";
+import { Link } from "react-router-dom";
 
 const InviteAndEarn = ({ drawerRef, data, forSp = false }) => {
   const [copied, setCopied] = useState(false);
-  console.log({ data });
   const color = forSp ? "text-yellow_gold" : "text-darkPurple";
 
   const handleCopy = async () => {
@@ -92,7 +92,9 @@ const InviteAndEarn = ({ drawerRef, data, forSp = false }) => {
               </div>
             </div>
 
+            <Link to={"/customerWebApp/profile/referralHistory"}>
             <p className="underline text-sm mt-10 text-purple cursor-pointer" >View Referral History</p>
+            </Link>
           </div>
         </div>
       </div>

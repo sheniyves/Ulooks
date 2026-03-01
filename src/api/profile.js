@@ -1,7 +1,6 @@
 import axiosInstance from "./axiosInstance";
 
 export const sendSupportMessage = async (payload) => {
-  console.log({ payload });
   const response = await axiosInstance.post("/support/message", payload, {
     headers: {
       "Content-Type": "multipart/form-data",
@@ -17,6 +16,10 @@ export const editUserProfile = async (payload) => {
 
 export const userProfile = async () => {
   const response = await axiosInstance.get("/user/profile");
+  return response.data;
+};
+export const getReferralHistory = async () => {
+  const response = await axiosInstance.get("/user/referrals/history");
   return response.data;
 };
 

@@ -13,9 +13,16 @@ import { fulltransactionData } from "../../data/transactionData";
 import arrowLeft from "../../assets/Images/arrow-left.svg";
 import { useNavigate } from "react-router-dom";
 import { ButtonBase } from "@mui/material";
+import { useQueryFn } from "../../../hooks/queryFn";
+import { getReferralHistory } from "../../api/profile";
 
-const TransactionHistory = () => {
-  const navigate = useNavigate();
+const ReferralHistory = () => {
+    const navigate = useNavigate();
+    const { data, isPending, isError } = useQueryFn({
+        key: ['referralHistory'],
+        fun: getReferralHistory
+    }) 
+    console.log({data})
   return (
     <div className="pb-[8rem] mt-6 min-h-screen">
       <ConatinerWidth>
@@ -26,7 +33,7 @@ const TransactionHistory = () => {
             <Header onClick={() => navigate(-1)} iconPresence  >
               <div className="flex items-center gap-2 cursor-pointer">
                 <img src={arrowLeft} alt="arrow left icon" />
-                Transaction History
+                Referral History
               </div>
             </Header>
           </div>
@@ -63,4 +70,4 @@ const TransactionHistory = () => {
   );
 };
 
-export default TransactionHistory;
+export default ReferralHistory;

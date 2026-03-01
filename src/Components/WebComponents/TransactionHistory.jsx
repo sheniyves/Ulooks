@@ -30,7 +30,6 @@ const TransactionHistory = () => {
 export default TransactionHistory;
 
 export const TransactionHistoryRows = ({ data, useBaseColor = true }) => {
-  console.log({ data });
   const handleIcon = (type) => {
     return type === "paid"
       ? addIcon

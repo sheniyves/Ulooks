@@ -1,3 +1,8 @@
+import badge1 from "../assets/Images/sp_badge_grade_1.svg";
+import badge2 from "../assets/Images/sp_badge_grade_2.svg";
+import badge3 from "../assets/Images/sp_badge_grade_3.svg";
+import badge4 from "../assets/Images/sp_badge_grade_4.svg";
+
 export const handlePriceFormatting = (price) => {
   if (price >= 1_000) {
     const formattedPrice = (price / 1000).toFixed(1);
@@ -17,13 +22,12 @@ export function handleFormatting(amount, currency = "NGN") {
   }).format(Number(amount) || 0);
 }
 
-
 export const normalize = (str) =>
   str
     .toLowerCase()
-    .replace(/['’]/g, "")     // remove apostrophes
-    .replace(/&/g, "and")     // replace &
-    .replace(/\s+/g, "_");    // spaces → _
+    .replace(/['’]/g, "") // remove apostrophes
+    .replace(/&/g, "and") // replace &
+    .replace(/\s+/g, "_"); // spaces → _
 
 export const handleDurationFormatting = (duration) => {
   if (duration >= 60) {
@@ -36,9 +40,8 @@ export const handleDurationFormatting = (duration) => {
 
 export const handleRatingFormaatting = (rating) => {
   const array = new Array(5).fill(0);
-   return array.map((_, i) => (i < rating ? 1 : 0));
+  return array.map((_, i) => (i < rating ? 1 : 0));
 };
-
 
 export function stringToColor(string) {
   let hash = 0;
@@ -83,10 +86,10 @@ export function stringAvatar(name) {
 
 export function getFrequencyCount(option) {
   const mapping = {
-    "Twice": 2,
-    "Three": 3,
-    "Four": 4,
-    "Five": 5,
+    Twice: 2,
+    Three: 3,
+    Four: 4,
+    Five: 5,
   };
 
   for (const word in mapping) {
@@ -95,5 +98,23 @@ export function getFrequencyCount(option) {
     }
   }
 
-  return 0; 
+  return 0;
 }
+
+export const getBadgeType = (badge) => {
+  if (!badge) return
+  const badgeInLowercase = badge.toLowerCase();
+  switch (badgeInLowercase) {
+    case "starter stylist":
+      return badge1;
+    case "growing pro":
+      return badge2;
+    case "trusted expert":
+      return badge3;
+    case "service master":
+      return badge4;
+
+    default:
+      return badge1;
+  }
+};
