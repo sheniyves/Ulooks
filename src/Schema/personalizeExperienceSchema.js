@@ -3,16 +3,30 @@ import { serviceOptions } from "../Utils/serviceOptions";
 
 // CUSTOMER EXPERIENCE
 const validCategories = [
-  "hair",
+  "beauty_treatments",
+  "hair_removal",
   "makeup",
-  "mens_grooming",
   "spa_and_wellness",
+  "teeth_whitening",
   "cosmetic_procedures",
-  "grooming",
+  "lashes_and_brows",
+  "mens_grooming",
+  "tailoring_and_alterations",
+  "hair",
+  "laundry_services",
   "nails",
+  "tattoo",
+  // "grooming",
+  // "cosmetic_procedures",
 ];
 
-const validServiceUsages = ["weekly", "bi_weekly", "monthly", "ocassionally", "rarely"];
+const validServiceUsages = [
+  "weekly",
+  "bi_weekly",
+  "monthly",
+  "ocassionally",
+  "rarely",
+];
 
 export const step1Schema = z.object({
   dateOfBirth: z.string().refine((val) => !isNaN(Date.parse(val)), {
@@ -61,7 +75,6 @@ export const step1SchemaSP = z.object({
   city: z.string().min(2, "Enter your location area"),
   serviceProviderLGA: z.string().min(2, "Enter LGA area"),
 });
-
 
 export const workTypeSchema = z.enum(["Shop", "Home services", "Events"]);
 
@@ -155,7 +168,7 @@ export const step3SchemaSP = z.object({
       {
         message:
           "Please upload a valid image (JPEG, PNG, WEBP, or GIF) under 25MB",
-      }
+      },
     )
     .optional(),
 
@@ -182,7 +195,7 @@ export const step3SchemaSP = z.object({
     {
       message:
         "Please upload a valid image (JPEG, PNG, WEBP, or GIF) under 25MB",
-    }
+    },
   ),
   // .optional(),
 
@@ -190,7 +203,7 @@ export const step3SchemaSP = z.object({
     .string()
     .min(
       10,
-      "Write a brief description about your business (minimum 10 characters)"
+      "Write a brief description about your business (minimum 10 characters)",
     ),
 });
 
@@ -221,7 +234,7 @@ export const createServiceSchema = z.object({
           if (typeof val === "number") return val > 0;
           return false;
         }, "Price is required"),
-      })
+      }),
     )
     .min(1, "At least one essential is required"),
   serviceCategory: z
@@ -265,9 +278,8 @@ export const createServiceSchema = z.object({
     {
       message:
         "Please upload a valid image (JPEG, PNG, WEBP, or GIF) under 25MB",
-    }
+    },
   ),
-
 
   amount: z
     .number({
@@ -302,5 +314,5 @@ export const createServiceEssentialSchema = z.object({
 });
 
 export const createServiceWithEssentialSchema = createServiceSchema.merge(
-  createServiceEssentialSchema
+  createServiceEssentialSchema,
 );

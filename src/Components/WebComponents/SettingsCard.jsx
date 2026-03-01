@@ -33,6 +33,8 @@ const SettingsCard = () => {
   const { email } = getFromLocalStorage("customerData", "User");
   const navigate = useNavigate();
   const [logout, setLogout] = useState(false);
+  const [fetchReferral, setFetchReferral] = useState(false);
+
   const accountDrawerRef = React.useRef(null);
   const securityDrawerRef = React.useRef(null);
   const supportDrawerRef = React.useRef(null);
@@ -83,6 +85,7 @@ const SettingsCard = () => {
         howUlooksWorksRef.current?.openDrawer();
         break;
       case "inviteNdEarn":
+        setFetchReferral(true);
         inviteNdEarnRef.current?.openDrawer();
         break;
       case "privacy":
@@ -106,7 +109,7 @@ const SettingsCard = () => {
   const { data: referralData, isPending: isReferralPending } = useQueryFn({
     key: ["referralStats"],
     fun: getReferralCode,
-    // enabled: !!inviteNdEarnRef.current
+    enabled: fetchReferral,
   });
 
   const handleLogout = () => {
@@ -151,6 +154,7 @@ const SettingsCard = () => {
           <SettingsRow
             isPending={isPending}
             isReferralPending={isReferralPending}
+            fetchReferral={fetchReferral}
             onClick={() => handleDrawerOpen(action.type)}
             key={i}
             action={action}
@@ -306,6 +310,7 @@ const SettingsRow = ({
   isPending,
   isReferralPending,
   isProfilePending,
+  fetchReferral,
   ...props
 }) => {
   const downloadOnAppRef = useRef(null);
@@ -348,7 +353,9 @@ const SettingsRow = ({
           {action.icon ? (
             (isPending && action.label === "Security") ||
             (isProfilePending && action.label === "Account") ||
-            (isReferralPending && action.label === "Invite & Earn") ? (
+            (isReferralPending &&
+              fetchReferral &&
+              action.label === "Invite & Earn") ? (
               <CircularProgress size={20} color="inherit" />
             ) : (
               <img src={action.icon} alt="" className="mr-2 w-[24px]" />

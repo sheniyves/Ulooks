@@ -9,6 +9,7 @@ const MediaSlider = ({
   previewFiles,
   onTagPeople,
   onOpenMusic,
+  onDeleteFile,
   musicSelectorRef,
 }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -20,12 +21,13 @@ const MediaSlider = ({
   // Reset currentIndex if it's out of bounds
   console.log({ previewFiles });
 
-  const handleRemoveFile = (index) => {
-    if (previewFiles.length === 0) return
-    // const idx = previewFiles.findIndex(q => )
-    // const tt = previewFiles.filter((f) => findIndexOf(f) !== index)
-    // setPrvFiles((pv) =>  ...pv.filter(index) => )
-  };
+const handleRemoveFile = (id) => {
+  if (previewFiles.length === 0) return;
+  onDeleteFile?.(id);
+  if (currentIndex >= previewFiles.length - 1 && currentIndex > 0) {
+    setCurrentIndex(currentIndex - 1);
+  }
+};
   useEffect(() => {
     if (currentIndex >= previewFiles.length && previewFiles.length > 0) {
       setCurrentIndex(previewFiles.length - 1);
@@ -165,7 +167,7 @@ const MediaSlider = ({
           </IconButton>
 
           <IconButton
-            onClick={() => handleRemoveFile(currentIndex)}
+             onClick={() => handleRemoveFile(previewFiles[currentIndex].id)}
             className="bg-black/60 hover:bg-black/80 w-9 h-9 rounded-full flex items-center justify-center"
             sx={{
               backgroundColor: "rgba(0, 0, 0, 0.6)",

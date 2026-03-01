@@ -18,6 +18,7 @@ const AlertDialog = forwardRef(
     {
       dialogTitle,
       action,
+      actionFun,
       icon,
       children,
       iconPresence = true,
@@ -100,7 +101,7 @@ const AlertDialog = forwardRef(
               {dialogTitle}
             </p>
           </div>
-          <ButtonBase>
+          <ButtonBase onClick={actionFun}>
             <span className="text-purple cursor-pointer text-xs font-medium p-2">
               {action}
             </span>

@@ -19,27 +19,17 @@ const TopServiceOfTheWeek = () => {
 
   // const today = new Date().toISOString().split("T")[0];
   const today = "2025-01-15";
-console.log({today})
   const { data, isPending, isSuccess, isError, error } = useQuery({
     queryKey: ["topService", today],
     queryFn: () => getTopService(today),
-    onSuccess: (data) => {
-      console.log("Fetched top services:", data?.data);
-    },
+ 
     onError: (error) => {
       const status = error?.response?.statusCode;
-      console.log({ error })
       if (status === 403) {
         navigate("/customerAuth/customer_signIn");
       }
     }
   });
-
-  useEffect(() => {
-    if (isSuccess) {
-      console.log("Fetched top services:", data?.data);
-    }
-  }, [isSuccess, data]);
 
   useEffect(() => {
     if (isError) {
@@ -82,7 +72,7 @@ console.log({today})
             dragElastic={0.05}
             dragMomentum={true}
           >
-            {data?.data?.map?.((service, index) => (
+            {data?.data?.map?.((service) => (
               <li
                 // key={`${service.id}-${index}`}
                 key={service.id}

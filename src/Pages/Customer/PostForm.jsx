@@ -27,6 +27,7 @@ const PostForm = ({ onSubmit, isLoading }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    
     onSubmit({ caption });
   };
 

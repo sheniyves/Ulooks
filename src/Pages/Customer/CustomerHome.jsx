@@ -18,11 +18,11 @@ import Notification from "../../Components/WebComponents/Notification";
 import { useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 import PageTransition from "../../Components/SharedComponents/PageTransition";
-import { notifications } from "../../data/notification";
 import MobileLocation from "../../Components/SharedComponents/MobileLocation";
 import { getFromLocalStorage } from "../../Utils/presistStorage";
 import { useQueryFn } from "../../../hooks/queryFn";
 import { getRisingStars } from "../../api/services";
+import { getNotifications } from "../../api/notifications";
 const CustomerHome = () => {
   const navigate = useNavigate();
   const { name } = getFromLocalStorage("customerData", "User");
@@ -34,27 +34,26 @@ const CustomerHome = () => {
   } = useForm();
   const dialogRef = React.useRef(null);
   const dragRef = React.useRef(null);
-  const inviteNdEarnRef = React.useRef(null);
   const limit = 10;
   const { data, isPending, isError } = useQueryFn({
     key: ["rising_stars", limit],
     fun: () => getRisingStars(limit),
   });
 
+
+
   const howUlooksWorks = () => {
     navigate("/customerWebApp/profile", {
       state: { openInviteDrawer: true },
     });
-    setTimeout(() => {
-      inviteNdEarnRef.current?.openDrawer();
-    }, 500);
+  
   };
   return (
     <div className="pb-[8rem] relative  ">
       <ConatinerWidth>
         <Sidebar />
         <Navbar />
-        <Notification dialogRef={dialogRef} notifications={notifications} />
+        {/* <Notification dialogRef={dialogRef} notifications={notifications?.data } /> */}
         <div className=" mt-4 lg:mt-[8.5rem]" />
         <Header action={dialogRef} icon={notification} iconPresence={false}>
           Welcome back {name?.split(" ")[0]}

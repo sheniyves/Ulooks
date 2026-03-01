@@ -47,7 +47,7 @@ const CustomerProfile = () => {
                   <img
                     src={data?.profile_picture_url || profile}
                     alt="profile picture"
-                    className="w-[8.75rem] h-[8.75rem] object-cover rounded-full"
+                    className="w-[8.75rem] h-[8.75rem] object-cover rounded-full border-2 border-gold"
                   />
                   <Tooltip
                     title={data?.badge}

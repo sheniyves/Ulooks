@@ -15,6 +15,9 @@ import TagPeopleDialog from "./TagPeople";
 import { Avatar, CircularProgress, IconButton } from "@mui/material";
 import { useMutationFn } from "../../../hooks/queryFn";
 import ClearIcon from "@mui/icons-material/Clear";
+import PlayArrowIcon from "@mui/icons-material/PlayArrow";
+import PauseIcon from "@mui/icons-material/Pause";
+import ReplayIcon from "@mui/icons-material/Replay";
 import { createInspo } from "../../api/inspo";
 import UploadInspo from "../../Components/WebComponents/UploadInspo";
 
@@ -25,6 +28,7 @@ const CreatePost = () => {
   const musicSelectorRef = useRef(null);
   const files = location.state?.files || [];
   const [musicLoading, setMusicLoading] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
 
   const [previewFiles, setPreviewFiles] = useState([]);
   const [tagDialogOpen, setTagDialogOpen] = useState(false);
@@ -37,19 +41,18 @@ const CreatePost = () => {
   useEffect(() => {
     if (!files.length) return;
 
-    const mapped = files.map((file) => ({
-      id: files.length,
+    const mapped = files.map((file, i) => ({
+      id: `${Date.now()}-${i}`,
       file,
       preview: URL.createObjectURL(file),
     }));
 
-    // Replace only once when coming from navigation
     setPreviewFiles(mapped);
 
     return () => {
       mapped.forEach((item) => URL.revokeObjectURL(item.preview));
     };
-  }, [files]); // Keep files as dependency
+  }, [files]);
 
   useEffect(() => {
     return () => {
@@ -63,7 +66,7 @@ const CreatePost = () => {
 
   const {
     mutate: createPost,
-    isLoading,
+    isPending,
     isError,
   } = useMutationFn({
     key: ["createPost"],
@@ -148,12 +151,12 @@ const CreatePost = () => {
   const handleFilesSelected = (newFiles) => {
     if (!newFiles || !newFiles.length) return;
 
-    const mapped = Array.from(newFiles).map((file) => ({
+    const mapped = Array.from(newFiles).map((file, i) => ({
+      id: `${Date.now()}-${i}`,
       file,
       preview: URL.createObjectURL(file),
     }));
 
-    // Append to existing files
     setPreviewFiles((prev) => [...prev, ...mapped]);
   };
 
@@ -190,6 +193,7 @@ const CreatePost = () => {
         console.error("Failed to play audio:", err);
       });
       setMusicLoading(false);
+      setIsAudioPlaying(true);
     };
 
     const handleError = () => {
@@ -202,12 +206,39 @@ const CreatePost = () => {
 
     audio.addEventListener("ended", () => {
       audioRef.current = null;
+      setIsAudioPlaying(false);
     });
+  };
+
+  const handleToggleAudio = () => {
+    if (!audioRef.current) return;
+    if (isAudioPlaying) {
+      audioRef.current.pause();
+      setIsAudioPlaying(false);
+    } else {
+      audioRef.current.play().catch((err) => console.error("Play failed:", err));
+      setIsAudioPlaying(true);
+    }
+  };
+
+  const handleRestartAudio = () => {
+    if (!audioRef.current) return;
+    audioRef.current.currentTime = 0;
+    audioRef.current.play().catch((err) => console.error("Play failed:", err));
+    setIsAudioPlaying(true);
   };
 
   const handleTagsConfirm = (users) => {
     setTaggedPeople(users);
     console.log("Tagged people:", users);
+  };
+
+  const handleDeleteFile = (id) => {
+    setPreviewFiles((prev) => {
+      const fileToRemove = prev.find((f) => f.id === id);
+      if (fileToRemove) URL.revokeObjectURL(fileToRemove.preview);
+      return prev.filter((f) => f.id !== id);
+    });
   };
 
   return (
@@ -234,6 +265,7 @@ const CreatePost = () => {
               <MediaSlider
                 previewFiles={previewFiles}
                 musicSelectorRef={musicSelectorRef}
+                onDeleteFile={handleDeleteFile}
                 onTagPeople={() => setTagDialogOpen(true)}
                 onOpenMusic={() => {
                   if (audioRef.current) {
@@ -252,7 +284,7 @@ const CreatePost = () => {
                   <div className="flex items-center gap-2 ">
                     <Avatar src={selectedMusic.cover_image_url} />
                     <div className="flex items-start flex-col">
-                      <p className="text-slate-700  text-left">
+                      <p className="text-slate-700 text-left">
                         {selectedMusic.title}
                       </p>
                       <small className="font-semibold text-slate-500 text-left">
@@ -264,25 +296,44 @@ const CreatePost = () => {
                     {musicLoading ? (
                       <CircularProgress size={18} sx={{ color: "#6A0DAD" }} />
                     ) : (
-                      <IconButton
-                        sx={{ color: "#6A0DAD" }}
-                        onClick={() => {
-                          setSelectedMusic(null);
-                          setMusicLoading(false);
+                      <>
+                        {/* Restart */}
+                        <IconButton
+                          sx={{ color: "#6A0DAD" }}
+                          onClick={handleRestartAudio}
+                        >
+                          <ReplayIcon />
+                        </IconButton>
 
-                          if (audioRef.current) {
-                            audioRef.current.pause();
-                            audioRef.current = null;
-                          }
-                        }}
-                      >
-                        <ClearIcon />
-                      </IconButton>
+                        {/* Play / Pause */}
+                        <IconButton
+                          sx={{ color: "#6A0DAD" }}
+                          onClick={handleToggleAudio}
+                        >
+                          {isAudioPlaying ? <PauseIcon /> : <PlayArrowIcon />}
+                        </IconButton>
+
+                        {/* Cancel */}
+                        <IconButton
+                          sx={{ color: "#6A0DAD" }}
+                          onClick={() => {
+                            setSelectedMusic(null);
+                            setMusicLoading(false);
+                            setIsAudioPlaying(false);
+                            if (audioRef.current) {
+                              audioRef.current.pause();
+                              audioRef.current = null;
+                            }
+                          }}
+                        >
+                          <ClearIcon />
+                        </IconButton>
+                      </>
                     )}
                   </div>
                 </div>
               )}
-              <PostForm onSubmit={handlePostSubmit} isLoading={isLoading} />
+              <PostForm onSubmit={handlePostSubmit} isLoading={isPending} />
             </div>
           </Content>
         </PageTransition>
